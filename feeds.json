@@ -1,0 +1,64 @@
+{
+  "feeds": [
+    {
+      "name": "AudioDharma",
+      "url": "http://feeds.feedburner.com/audiodharma",
+      "website": "https://www.audiodharma.org/"
+    },
+    {
+      "name": "Dharma Seed",
+      "url": "https://www.dharmaseed.org/feeds/recordings/",
+      "website": "https://www.dharmaseed.org/"
+    },
+    {
+      "name": "Insight Meditation Society - Forest Refuge",
+      "url": "https://IMSFR.dharmaseed.org/feeds/recordings/",
+      "website": "https://www.dharma.org/forest-refuge/"
+    },
+    {
+      "name": "Insight Meditation Society - Retreat Center",
+      "url": "https://imsrc.dharmaseed.org/feeds/recordings/",
+      "website": "https://www.dharma.org/retreat-center/"
+    },
+    {
+      "name": "Tara Brach",
+      "url": "https://tarabrach.libsyn.com/rss",
+      "website": "https://www.tarabrach.com/"
+    },
+    {
+      "name": "Heart Wisdom with Jack Kornfield",
+      "url": "https://rss.art19.com/heart-wisdom-with-jack-kornfield",
+      "website": "https://jackkornfield.com/"
+    },
+    {
+      "name": "Spirit Rock Meditation Center",
+      "url": "https://sr.dharmaseed.org/feeds/recordings/",
+      "website": "https://www.spiritrock.org/"
+    },
+    {
+      "name": "Insight Hour with Joseph Goldstein",
+      "url": "https://rss.art19.com/insight-hour-with-joseph-goldstein",
+      "website": "https://beherenownetwork.com/category/insight-hour-with-joseph-goldstein/"
+    },
+    {
+      "name": "Metta Hour with Sharon Salzberg",
+      "url": "https://rss.art19.com/metta-hour-with-sharon-salzberg",
+      "website": "https://www.sharonsalzberg.com/metta-hour-podcast"
+    },
+    {
+      "name": "True North Insight",
+      "url": "https://TNI.dharmaseed.org/feeds/recordings/",
+      "website": "https://www.truenorthinsight.org/"
+    },
+    {
+      "name": "Ajahn Brahm Podcast",
+      "url": "https://podcast.bswa.org/feed.xml",
+      "website": "https://bswa.org/"
+    },
+    {
+      "name": "Secular Buddhism",
+      "url": "https://feeds.acast.com/public/shows/6359a8448c5fe9001207c0ac",
+      "website": "https://secularbuddhism.com/"
+    }
+  ]
+}
