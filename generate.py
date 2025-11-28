@@ -74,7 +74,10 @@ def parse_feed(feed_url: str, feed_name: str, feed_website: str) -> List[Dict]:
 
     meditations = []
 
-    for entry in feed.entries:
+    # Limit to first 50 entries to reduce processing time and keep recent content
+    entries_to_process = feed.entries[:50]
+
+    for entry in entries_to_process:
         title = entry.get('title', '')
         description = entry.get('description', '') or entry.get('summary', '')
 
@@ -104,17 +107,95 @@ def parse_feed(feed_url: str, feed_name: str, feed_website: str) -> List[Dict]:
                 elif hasattr(entry, 'links') and entry.links:
                     episode_url = entry.links[0].get('href', '')
 
+            # Get duration if available (typically in itunes:duration tag)
+            duration = None
+            if hasattr(entry, 'itunes_duration'):
+                duration = entry.itunes_duration
+            elif 'itunes_duration' in entry:
+                duration = entry['itunes_duration']
+
             meditations.append({
                 'title': title,
                 'description': description,
                 'date': date,
                 'episode_url': episode_url,
                 'feed_name': feed_name,
-                'feed_website': feed_website
+                'feed_website': feed_website,
+                'duration': duration
             })
 
     print(f"Found {len(meditations)} guided meditations from {feed_name}")
     return meditations
+
+def format_duration(duration_str: str) -> str:
+    """
+    Format duration string to human-readable format.
+    Handles both HH:MM:SS and seconds formats.
+    """
+    if not duration_str:
+        return None
+
+    try:
+        # If it contains colons, it's already formatted
+        if ':' in str(duration_str):
+            parts = str(duration_str).split(':')
+            if len(parts) == 3:  # HH:MM:SS
+                hours, mins, secs = int(parts[0]), int(parts[1]), int(parts[2])
+                if hours > 0:
+                    return f"{hours}h {mins}m"
+                else:
+                    return f"{mins}m"
+            elif len(parts) == 2:  # MM:SS
+                mins, secs = int(parts[0]), int(parts[1])
+                return f"{mins}m"
+        else:
+            # Assume it's in seconds
+            total_seconds = int(duration_str)
+            hours = total_seconds // 3600
+            minutes = (total_seconds % 3600) // 60
+
+            if hours > 0:
+                return f"{hours}h {minutes}m"
+            else:
+                return f"{minutes}m"
+    except (ValueError, AttributeError):
+        return None
+
+def process_description(description: str) -> str:
+    """
+    Process description text: strip HTML, remove asterisks, truncate to 150 words, escape HTML, and convert URLs to links.
+    """
+    # Strip HTML tags
+    description = re.sub('<[^<]+?>', '', description)
+
+    # Remove multiple asterisks (3 or more)
+    description = re.sub(r'\*{3,}', '', description)
+
+    # Truncate to 150 words
+    words = description.split()
+    if len(words) > 150:
+        description = ' '.join(words[:150]) + '...'
+    else:
+        description = ' '.join(words)
+
+    # Escape HTML entities
+    description = html_escape(description)
+
+    # Convert URLs to clickable links (after escaping, so our links won't be escaped)
+    # Match http://, https://, and www. URLs
+    url_pattern = r'(https?://[^\s<>"{}|\\^`\[\]]+|www\.[^\s<>"{}|\\^`\[\]]+)'
+
+    def make_link(match):
+        url = match.group(1)
+        # Add https:// to www. links
+        href = url if url.startswith('http') else f'https://{url}'
+        # Limit displayed text length for very long URLs
+        display_url = url if len(url) <= 50 else url[:47] + '...'
+        return f'<a href="{href}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();">{display_url}</a>'
+
+    description = re.sub(url_pattern, make_link, description)
+
+    return description
 
 def generate_html(meditations: List[Dict], output_file: str):
     """
@@ -132,7 +213,51 @@ def generate_html(meditations: List[Dict], output_file: str):
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guided Meditations</title>
+
+    <!-- Primary Meta Tags -->
+    <title>🧘 Guided Meditations - Curated Collection from Dharma Podcasts</title>
+    <meta name="title" content="🧘 Guided Meditations - Curated Collection from Dharma Podcasts">
+    <meta name="description" content="Discover {total_count} guided meditations from renowned teachers including Tara Brach, Jack Kornfield, Sharon Salzberg, Joseph Goldstein, and Ajahn Brahm. Free mindfulness and dharma practices.">
+    <meta name="keywords" content="guided meditation, mindfulness, dharma, buddhist meditation, Tara Brach, Jack Kornfield, Sharon Salzberg, Joseph Goldstein, Ajahn Brahm, meditation practice, body scan, breath meditation, compassion meditation, insight meditation">
+    <meta name="author" content="Alastair Rushworth">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://alastairrushworth.github.io/meditation/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://alastairrushworth.github.io/meditation/">
+    <meta property="og:title" content="🧘 Guided Meditations - Curated Collection from Dharma Podcasts">
+    <meta property="og:description" content="Discover {total_count} guided meditations from renowned teachers including Tara Brach, Jack Kornfield, Sharon Salzberg, Joseph Goldstein, and Ajahn Brahm. Free mindfulness and dharma practices.">
+    <meta property="og:site_name" content="🧘 Guided Meditations">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_card">
+    <meta property="twitter:url" content="https://alastairrushworth.github.io/meditation/">
+    <meta property="twitter:title" content="🧘 Guided Meditations - Curated Collection from Dharma Podcasts">
+    <meta property="twitter:description" content="Discover {total_count} guided meditations from renowned teachers including Tara Brach, Jack Kornfield, Sharon Salzberg, Joseph Goldstein, and Ajahn Brahm. Free mindfulness and dharma practices.">
+
+    <!-- Structured Data / JSON-LD -->
+    <script type="application/ld+json">
+    {{
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Guided Meditations",
+      "description": "A curated collection of guided meditations from dharma podcasts",
+      "url": "https://alastairrushworth.github.io/meditation/",
+      "author": {{
+        "@type": "Person",
+        "name": "Alastair Rushworth",
+        "url": "https://alastairrushworth.com"
+      }},
+      "publisher": {{
+        "@type": "Person",
+        "name": "Alastair Rushworth"
+      }},
+      "inLanguage": "en-US",
+      "keywords": "guided meditation, mindfulness, dharma, buddhist meditation, meditation practice"
+    }}
+    </script>
+
     <style>
         * {{
             margin: 0;
@@ -278,6 +403,7 @@ def generate_html(meditations: List[Dict], output_file: str):
 
         .meditation-content {{
             padding: 24px;
+            overflow: hidden;
         }}
 
         .meditation-meta {{
@@ -321,6 +447,20 @@ def generate_html(meditations: List[Dict], output_file: str):
             color: #64748b;
             line-height: 1.6;
             font-size: 0.95em;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word;
+        }}
+
+        .meditation-description a {{
+            color: #667eea;
+            text-decoration: underline;
+            word-break: break-all;
+            overflow-wrap: anywhere;
+        }}
+
+        .meditation-description a:hover {{
+            color: #764ba2;
         }}
 
         footer {{
@@ -513,7 +653,7 @@ def generate_html(meditations: List[Dict], output_file: str):
 <body>
     <div class="container">
         <header>
-            <h1>Guided Meditations</h1>
+            <h1>🧘 Guided Meditations</h1>
             <p class="subtitle">A curated collection from dharma podcasts</p>
             <div class="search-box">
                 <input type="text" id="search-input" class="search-input" placeholder="Search meditations...">
@@ -534,29 +674,39 @@ def generate_html(meditations: List[Dict], output_file: str):
     for meditation in meditations:
         date_str = meditation['date'].strftime('%B %d, %Y')
 
+        # Format duration if available
+        duration_str = format_duration(meditation.get('duration'))
+
         # Strip HTML tags and escape HTML entities
         title = re.sub('<[^<]+?>', '', meditation['title'])
         title = html_escape(title)
 
-        description = meditation['description'][:300] + '...' if len(meditation['description']) > 300 else meditation['description']
-        description = re.sub('<[^<]+?>', '', description)
-        description = html_escape(description)
+        # Process description: strip HTML, remove asterisks, convert URLs to links
+        description_html = process_description(meditation['description'])
+
+        # Create a plain text version for search data attributes (without HTML links)
+        description_plain = re.sub('<[^<]+?>', '', description_html)
 
         # Escape URLs
         feed_website = html_escape(meditation['feed_website'])
         episode_url = html_escape(meditation['episode_url'])
         feed_name = html_escape(meditation['feed_name'])
 
+        # Build metadata line with date and optional duration
+        metadata_html = f'<div class="meditation-date">{date_str}</div>'
+        if duration_str:
+            metadata_html += f'\n                        <div class="meta-dot"></div>\n                        <div class="meditation-date">{duration_str}</div>'
+
         html += f"""
-            <div class="meditation" data-podcast="{feed_name}" data-title="{title.lower()}" data-description="{description.lower()}" data-original-title="{title}" data-original-description="{description}" data-url="{episode_url}">
+            <div class="meditation" data-podcast="{feed_name}" data-title="{title.lower()}" data-description="{description_plain.lower()}" data-original-title="{title}" data-url="{episode_url}">
                 <div class="meditation-content">
                     <div class="meditation-meta">
                         <a href="{feed_website}" class="meditation-source" target="_blank" onclick="event.stopPropagation();">{feed_name}</a>
                         <div class="meta-dot"></div>
-                        <div class="meditation-date">{date_str}</div>
+                        {metadata_html}
                     </div>
                     <div class="meditation-title">{title}</div>
-                    <div class="meditation-description">{description}</div>
+                    <div class="meditation-description">{description_html}</div>
                 </div>
             </div>
 """
@@ -617,7 +767,6 @@ def generate_html(meditations: List[Dict], output_file: str):
                 const title = meditation.getAttribute('data-title');
                 const description = meditation.getAttribute('data-description');
                 const originalTitle = meditation.getAttribute('data-original-title');
-                const originalDescription = meditation.getAttribute('data-original-description');
 
                 // Check podcast filter
                 const podcastMatch = selectedPodcast === 'all' || podcast === selectedPodcast;
@@ -630,8 +779,7 @@ def generate_html(meditations: List[Dict], output_file: str):
                 if (podcastMatch && searchMatch) {{
                     filteredMeditations.push({{
                         element: meditation,
-                        originalTitle: originalTitle,
-                        originalDescription: originalDescription
+                        originalTitle: originalTitle
                     }});
                 }}
             }});
@@ -655,18 +803,16 @@ def generate_html(meditations: List[Dict], output_file: str):
             filteredMeditations.forEach((item, index) => {{
                 const meditation = item.element;
                 const titleElement = meditation.querySelector('.meditation-title');
-                const descriptionElement = meditation.querySelector('.meditation-description');
 
                 if (index >= startIndex && index < endIndex) {{
                     meditation.classList.remove('hidden');
 
-                    // Apply highlighting if there's a search term
+                    // Apply highlighting to title if there's a search term
+                    // Description is left as-is to preserve HTML links
                     if (searchTerm) {{
                         titleElement.innerHTML = highlightText(item.originalTitle, searchTerm);
-                        descriptionElement.innerHTML = highlightText(item.originalDescription, searchTerm);
                     }} else {{
                         titleElement.textContent = item.originalTitle;
-                        descriptionElement.textContent = item.originalDescription;
                     }}
                 }}
             }});
