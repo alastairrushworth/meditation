@@ -334,6 +334,17 @@ def generate_html(meditations: List[Dict], output_file: str):
             margin: 6px 0;
         }}
 
+        footer a {{
+            color: #667eea;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }}
+
+        footer a:hover {{
+            color: #764ba2;
+            text-decoration: underline;
+        }}
+
         .hidden {{
             display: none !important;
         }}
@@ -401,6 +412,15 @@ def generate_html(meditations: List[Dict], output_file: str):
             }}
         }}
     </style>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y8XLWX2T51"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){{dataLayer.push(arguments);}}
+      gtag('js', new Date());
+
+      gtag('config', 'G-Y8XLWX2T51');
+    </script>
 </head>
 <body>
     <div class="container">
@@ -459,6 +479,10 @@ def generate_html(meditations: List[Dict], output_file: str):
         <footer>
             <p>Last updated: {update_time}</p>
             <p>Generated from podcast RSS feeds</p>
+            <p>
+                <a href="https://github.com/alastairrushworth/meditation" target="_blank">View on GitHub</a> |
+                Made by <a href="https://alastairrushworth.com" target="_blank">alastairrushworth.com</a>
+            </p>
         </footer>
     </div>
 
