@@ -216,6 +216,78 @@
             text-decoration: underline;
         }
 
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            padding: 32px 24px;
+            flex-wrap: wrap;
+        }
+
+        .pagination-btn {
+            padding: 10px 18px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            color: #64748b;
+            font-size: 0.9em;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            border-color: #667eea;
+            color: #667eea;
+            background: #f8fafc;
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .pagination-numbers {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .page-number {
+            padding: 8px 12px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            color: #64748b;
+            font-size: 0.9em;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            user-select: none;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .page-number:hover {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+        }
+
+        .page-number.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+        }
+
+        .page-ellipsis {
+            padding: 8px 4px;
+            color: #94a3b8;
+            user-select: none;
+        }
+
         .hidden {
             display: none !important;
         }
@@ -280,6 +352,22 @@
 
             .meditation-description {
                 font-size: 0.9em;
+            }
+
+            .pagination {
+                padding: 24px 16px;
+                gap: 8px;
+            }
+
+            .pagination-btn {
+                padding: 8px 14px;
+                font-size: 0.85em;
+            }
+
+            .page-number {
+                padding: 6px 10px;
+                font-size: 0.85em;
+                min-width: 36px;
             }
         }
     </style>
@@ -8577,8 +8665,14 @@ Free download of Tara’s new 10 min meditation: “Mindful Breathing: Finding C
 
         </main>
 
+        <div class="pagination" id="pagination">
+            <button class="pagination-btn" id="prev-btn" disabled>&laquo; Previous</button>
+            <div class="pagination-numbers" id="pagination-numbers"></div>
+            <button class="pagination-btn" id="next-btn">Next &raquo;</button>
+        </div>
+
         <footer>
-            <p>Last updated: November 28, 2025 at 09:01 AM</p>
+            <p>Last updated: November 28, 2025 at 09:04 AM</p>
             <p>Generated from podcast RSS feeds</p>
             <p>
                 <a href="https://github.com/alastairrushworth/meditation" target="_blank">View on GitHub</a> |
@@ -8588,13 +8682,19 @@ Free download of Tara’s new 10 min meditation: “Mindful Breathing: Finding C
     </div>
 
     <script>
-        // Filter and search functionality
+        // Filter, search, and pagination functionality
         const filterPills = document.querySelectorAll('.filter-pill');
         const searchInput = document.getElementById('search-input');
         const resultCount = document.getElementById('result-count');
         const meditations = document.querySelectorAll('.meditation');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const paginationNumbers = document.getElementById('pagination-numbers');
 
+        const ITEMS_PER_PAGE = 25;
         let selectedPodcast = 'all';
+        let currentPage = 1;
+        let filteredMeditations = [];
 
         function escapeRegExp(string) {
             return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -8610,8 +8710,9 @@ Free download of Tara’s new 10 min meditation: “Mindful Breathing: Finding C
 
         function applyFilters() {
             const searchTerm = searchInput.value.toLowerCase().trim();
-            let visibleCount = 0;
+            filteredMeditations = [];
 
+            // First pass: determine which meditations match filters
             meditations.forEach(meditation => {
                 const podcast = meditation.getAttribute('data-podcast');
                 const title = meditation.getAttribute('data-title');
@@ -8627,53 +8728,150 @@ Free download of Tara’s new 10 min meditation: “Mindful Breathing: Finding C
                                    title.includes(searchTerm) ||
                                    description.includes(searchTerm);
 
-                // Show/hide based on both filters
                 if (podcastMatch && searchMatch) {
+                    filteredMeditations.push({
+                        element: meditation,
+                        originalTitle: originalTitle,
+                        originalDescription: originalDescription
+                    });
+                }
+            });
+
+            // Reset to page 1 when filters change
+            currentPage = 1;
+
+            // Apply pagination
+            applyPagination(searchTerm);
+        }
+
+        function applyPagination(searchTerm = '') {
+            const totalPages = Math.ceil(filteredMeditations.length / ITEMS_PER_PAGE);
+            const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+            const endIndex = startIndex + ITEMS_PER_PAGE;
+
+            // Hide all meditations first
+            meditations.forEach(m => m.classList.add('hidden'));
+
+            // Show only the meditations for the current page
+            filteredMeditations.forEach((item, index) => {
+                const meditation = item.element;
+                const titleElement = meditation.querySelector('.meditation-title');
+                const descriptionElement = meditation.querySelector('.meditation-description');
+
+                if (index >= startIndex && index < endIndex) {
                     meditation.classList.remove('hidden');
-                    visibleCount++;
 
                     // Apply highlighting if there's a search term
-                    const titleElement = meditation.querySelector('.meditation-title');
-                    const descriptionElement = meditation.querySelector('.meditation-description');
-
                     if (searchTerm) {
-                        titleElement.innerHTML = highlightText(originalTitle, searchTerm);
-                        descriptionElement.innerHTML = highlightText(originalDescription, searchTerm);
+                        titleElement.innerHTML = highlightText(item.originalTitle, searchTerm);
+                        descriptionElement.innerHTML = highlightText(item.originalDescription, searchTerm);
                     } else {
-                        // Reset to original text if no search term
-                        titleElement.textContent = originalTitle;
-                        descriptionElement.textContent = originalDescription;
+                        titleElement.textContent = item.originalTitle;
+                        descriptionElement.textContent = item.originalDescription;
                     }
-                } else {
-                    meditation.classList.add('hidden');
                 }
             });
 
             // Update result count
             const totalText = selectedPodcast === 'all' ? '553' : '';
-            if (totalText && visibleCount < 553) {
-                resultCount.textContent = `Showing ${visibleCount} of ${totalText} meditations`;
+            const showing = Math.min(filteredMeditations.length, endIndex) - startIndex;
+
+            if (filteredMeditations.length === 0) {
+                resultCount.textContent = 'No meditations found';
+            } else if (totalText && filteredMeditations.length < 553) {
+                resultCount.textContent = `Showing ${startIndex + 1}-${startIndex + showing} of ${filteredMeditations.length} meditations`;
             } else {
-                resultCount.textContent = `Showing ${visibleCount} meditation${visibleCount !== 1 ? 's' : ''}`;
+                resultCount.textContent = `Showing ${startIndex + 1}-${startIndex + showing} of ${filteredMeditations.length} meditations`;
             }
+
+            // Update pagination controls
+            renderPagination(totalPages);
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderPagination(totalPages) {
+            // Update prev/next buttons
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === totalPages || totalPages === 0;
+
+            // Clear pagination numbers
+            paginationNumbers.innerHTML = '';
+
+            if (totalPages <= 1) {
+                return; // Don't show pagination for single page
+            }
+
+            // Generate page numbers with ellipsis
+            const maxVisible = 7;
+            let pages = [];
+
+            if (totalPages <= maxVisible) {
+                // Show all pages
+                for (let i = 1; i <= totalPages; i++) {
+                    pages.push(i);
+                }
+            } else {
+                // Show pages with ellipsis
+                if (currentPage <= 4) {
+                    pages = [1, 2, 3, 4, 5, '...', totalPages];
+                } else if (currentPage >= totalPages - 3) {
+                    pages = [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+                } else {
+                    pages = [1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages];
+                }
+            }
+
+            // Render page numbers
+            pages.forEach(page => {
+                if (page === '...') {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.className = 'page-ellipsis';
+                    ellipsis.textContent = '...';
+                    paginationNumbers.appendChild(ellipsis);
+                } else {
+                    const pageBtn = document.createElement('div');
+                    pageBtn.className = 'page-number' + (page === currentPage ? ' active' : '');
+                    pageBtn.textContent = page;
+                    pageBtn.addEventListener('click', () => goToPage(page));
+                    paginationNumbers.appendChild(pageBtn);
+                }
+            });
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            applyPagination(searchTerm);
         }
 
         // Filter pill click handlers
         filterPills.forEach(pill => {
             pill.addEventListener('click', function() {
-                // Remove active class from all pills
                 filterPills.forEach(p => p.classList.remove('active'));
-                // Add active class to clicked pill
                 this.classList.add('active');
-                // Update selected podcast
                 selectedPodcast = this.getAttribute('data-podcast');
-                // Apply filters
                 applyFilters();
             });
         });
 
         // Search input handler
         searchInput.addEventListener('input', applyFilters);
+
+        // Pagination button handlers
+        prevBtn.addEventListener('click', () => {
+            if (currentPage > 1) {
+                goToPage(currentPage - 1);
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            const totalPages = Math.ceil(filteredMeditations.length / ITEMS_PER_PAGE);
+            if (currentPage < totalPages) {
+                goToPage(currentPage + 1);
+            }
+        });
 
         // Make meditation cards clickable
         meditations.forEach(meditation => {
@@ -8684,6 +8882,9 @@ Free download of Tara’s new 10 min meditation: “Mindful Breathing: Finding C
                 }
             });
         });
+
+        // Initialize on page load
+        applyFilters();
     </script>
 </body>
 </html>
