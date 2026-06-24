@@ -5,51 +5,52 @@ Generate a static webpage listing guided meditations from podcast RSS feeds.
 
 import json
 import re
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Dict
 import feedparser
 import requests
 from pathlib import Path
-from html import escape as html_escape
+from html import escape as html_escape, unescape as html_unescape
 
-# Keywords to identify guided meditations
+SITE_URL = "https://alastairrushworth.github.io/meditation/"
+
+# Signals that an episode is a guided meditation. These are matched against the
+# episode TITLE only: many dharma talks and interviews mention "guided
+# meditation" in their show-notes/description, so matching the description leads
+# to lots of false positives (talks, Q&As, numbered podcast episodes). Matching
+# the title is both more precise (drops talks) and more thorough (catches titles
+# like "Meditation: Body Scan" that don't use the exact phrase "guided
+# meditation").
 MEDITATION_KEYWORDS = [
-    'guided meditation',
-    'guided meditaton',  # common typo in feed
+    'meditation',   # "Meditation: ...", "Guided Meditation", "Metta Meditation"
     'body scan',
-    'breath meditation',
-    'mindfulness meditation',
-    'sitting meditation',
-    'walking meditation',
-    'compassion meditation',
-    'awareness meditation'
+    'guided ',      # "Guided Reflection", "Guided Metta", "Guided Relaxation"
 ]
 
-# Exclude talks that are not meditations
+# Exclude talks / non-meditation formats even if the title matches above.
 EXCLUDE_KEYWORDS = [
     'dharmette',
     'practice notes',
     'dharma talk',
     'questions and answers',
     'q&a',
-    'discussion'
+    'discussion',
 ]
 
-def is_guided_meditation(title: str, description: str) -> bool:
+def is_guided_meditation(title: str, description: str = '') -> bool:
     """
-    Determine if an episode is a guided meditation based on title and description.
+    Determine if an episode is a guided meditation, based on its title.
     """
     title_lower = title.lower()
-    text_lower = f"{title_lower} {description.lower()}"
 
     # First check if it should be excluded
     for exclude in EXCLUDE_KEYWORDS:
         if exclude in title_lower:
             return False
 
-    # Check for meditation keywords
+    # Check for meditation keywords in the title
     for keyword in MEDITATION_KEYWORDS:
-        if keyword in text_lower:
+        if keyword in title_lower:
             return True
 
     return False
@@ -118,7 +119,7 @@ def parse_feed(feed_url: str, feed_name: str, feed_website: str) -> List[Dict]:
                 'title': title,
                 'description': description,
                 'date': date,
-                'episode_url': episode_url,
+                'episode_url': episode_url or feed_website,
                 'feed_name': feed_name,
                 'feed_website': feed_website,
                 'duration': duration
@@ -161,12 +162,17 @@ def format_duration(duration_str: str) -> str:
     except (ValueError, AttributeError):
         return None
 
+def strip_tags(text: str) -> str:
+    """Remove HTML tags from a string."""
+    return re.sub('<[^<]+?>', '', text or '')
+
 def process_description(description: str) -> str:
     """
-    Process description text: strip HTML, remove asterisks, truncate to 150 words, escape HTML, and convert URLs to links.
+    Process description text: strip HTML, remove asterisks, truncate to 150 words,
+    escape HTML, and convert URLs to links.
     """
     # Strip HTML tags
-    description = re.sub('<[^<]+?>', '', description)
+    description = strip_tags(description)
 
     # Remove multiple asterisks (3 or more)
     description = re.sub(r'\*{3,}', '', description)
@@ -187,15 +193,558 @@ def process_description(description: str) -> str:
 
     def make_link(match):
         url = match.group(1)
+        # Trailing sentence punctuation should not be part of the link
+        trailing = ''
+        while url and url[-1] in '.,;:!?':
+            trailing = url[-1] + trailing
+            url = url[:-1]
+        if not url:
+            return match.group(1)
         # Add https:// to www. links
         href = url if url.startswith('http') else f'https://{url}'
         # Limit displayed text length for very long URLs
         display_url = url if len(url) <= 50 else url[:47] + '...'
-        return f'<a href="{href}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();">{display_url}</a>'
+        return (f'<a href="{href}" target="_blank" rel="noopener noreferrer">'
+                f'{display_url}</a>{trailing}')
 
     description = re.sub(url_pattern, make_link, description)
 
     return description
+
+
+# --------------------------------------------------------------------------
+# Page template (split into pieces so CSS/JS braces stay literal)
+# --------------------------------------------------------------------------
+
+CSS = """
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --bg: #faf8f4;
+    --bg-soft: #f3efe8;
+    --surface: #fffefb;
+    --text: #1c1917;
+    --text-soft: #57534e;
+    --muted: #6f6a61;
+    --accent: #5b7553;
+    --accent-strong: #455a3e;
+    --accent-tint: #eef1ea;
+    --border: #e7e1d8;
+    --highlight: #f6e7c4;
+    --shadow: 0 1px 2px rgba(28, 25, 23, 0.04), 0 1px 3px rgba(28, 25, 23, 0.05);
+    --shadow-lift: 0 10px 24px -8px rgba(28, 25, 23, 0.16);
+    --radius: 14px;
+    --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto,
+        'Helvetica Neue', Arial, sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+    font-family: var(--font-sans);
+    line-height: 1.65;
+    color: var(--text);
+    background-color: var(--bg);
+    background-image:
+        radial-gradient(1200px 600px at 50% -10%, #ffffff 0%, rgba(255, 255, 255, 0) 60%);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+.container { max-width: 820px; margin: 0 auto; padding-bottom: 64px; }
+
+/* --- Header ----------------------------------------------------------- */
+header {
+    padding: 44px 24px 26px;
+    text-align: center;
+    background: rgba(250, 248, 244, 0.82);
+    backdrop-filter: saturate(140%) blur(10px);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid var(--border);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 4px;
+}
+
+.brand-mark { width: 38px; height: 38px; flex-shrink: 0; }
+
+h1 {
+    font-family: var(--font-serif);
+    font-size: 2.6rem;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: -0.015em;
+    line-height: 1.1;
+}
+
+.subtitle {
+    font-size: 1rem;
+    color: var(--muted);
+    font-weight: 400;
+    margin-bottom: 22px;
+}
+
+.search-box { max-width: 520px; margin: 0 auto; position: relative; }
+
+.search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    color: var(--muted);
+    pointer-events: none;
+}
+
+.search-input {
+    width: 100%;
+    padding: 13px 18px 13px 44px;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: inherit;
+    color: var(--text);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(91, 117, 83, 0.14);
+}
+
+.search-input::placeholder { color: #a8a299; }
+
+/* --- Filters ---------------------------------------------------------- */
+.filters { padding: 18px 24px 0; }
+
+.filter-pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.filter-pill {
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    color: var(--text-soft);
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    white-space: nowrap;
+}
+
+.filter-pill:hover { border-color: #cabfae; background: var(--bg-soft); }
+
+.filter-pill.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+}
+
+.result-count {
+    text-align: center;
+    margin: 18px 0 4px;
+    color: var(--muted);
+    font-size: 0.875rem;
+}
+
+/* --- Meditation cards ------------------------------------------------- */
+main { padding: 8px 24px 0; }
+
+.meditation {
+    position: relative;
+    background: var(--surface);
+    margin-bottom: 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    cursor: pointer;
+}
+
+.meditation:hover {
+    box-shadow: var(--shadow-lift);
+    border-color: #d8cfc0;
+    transform: translateY(-2px);
+}
+
+.meditation-content { padding: 22px 24px; }
+
+.meditation-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.meditation-source {
+    position: relative;
+    z-index: 2;
+    font-size: 0.74rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.meditation-source:hover { color: var(--accent-strong); text-decoration: underline; }
+
+.meditation-date { font-size: 0.82rem; color: var(--muted); }
+
+.meta-dot {
+    width: 3px;
+    height: 3px;
+    background: #cabfae;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.meditation-title {
+    font-family: var(--font-serif);
+    font-size: 1.28rem;
+    font-weight: 500;
+    line-height: 1.32;
+    margin-bottom: 9px;
+    letter-spacing: -0.01em;
+}
+
+.meditation-link { color: var(--text); text-decoration: none; }
+.meditation-link:hover { color: var(--accent-strong); }
+
+.meditation:hover .meditation-title { color: var(--accent-strong); }
+
+.meditation-description {
+    color: var(--text-soft);
+    line-height: 1.65;
+    font-size: 0.94rem;
+    overflow-wrap: anywhere;
+}
+
+.meditation-description a {
+    position: relative;
+    z-index: 2;
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    overflow-wrap: anywhere;
+}
+
+.meditation-description a:hover { color: var(--accent-strong); }
+
+/* --- Pagination ------------------------------------------------------- */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 30px 24px 8px;
+    flex-wrap: wrap;
+}
+
+.pagination-btn, .page-number {
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    color: var(--text-soft);
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 9px;
+    transition: all 0.18s ease;
+}
+
+.pagination-btn { padding: 9px 16px; }
+.page-number { padding: 8px 12px; min-width: 40px; text-align: center; }
+
+.pagination-numbers { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+
+.pagination-btn:hover:not(:disabled),
+.page-number:hover { border-color: #cabfae; background: var(--bg-soft); }
+
+.pagination-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.page-number.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+}
+
+.page-ellipsis { padding: 8px 4px; color: var(--muted); }
+
+/* --- Footer ----------------------------------------------------------- */
+footer {
+    text-align: center;
+    padding: 44px 24px 8px;
+    color: var(--muted);
+    font-size: 0.84rem;
+}
+
+footer p { margin: 5px 0; }
+footer a { color: var(--accent); text-decoration: none; }
+footer a:hover { color: var(--accent-strong); text-decoration: underline; }
+
+/* --- Utilities -------------------------------------------------------- */
+.hidden { display: none !important; }
+
+.highlight {
+    background: var(--highlight);
+    padding: 1px 3px;
+    border-radius: 3px;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+.meditation:focus-within {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+::-webkit-scrollbar { width: 9px; height: 9px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d8cfc0; border-radius: 5px; }
+::-webkit-scrollbar-thumb:hover { background: #c2b6a3; }
+
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { transition: none !important; }
+    .meditation:hover { transform: none; }
+}
+
+@media (max-width: 768px) {
+    h1 { font-size: 2.1rem; }
+    header { padding: 30px 18px 22px; }
+    .subtitle { font-size: 0.92rem; }
+    main { padding: 8px 16px 0; }
+    .filters { padding: 16px 16px 0; }
+    .meditation-content { padding: 18px 18px; }
+    .meditation-title { font-size: 1.14rem; }
+    .meditation-description { font-size: 0.9rem; }
+    .pagination { padding: 24px 16px 4px; gap: 8px; }
+}
+"""
+
+
+JS = """
+const filterPills = document.querySelectorAll('.filter-pill');
+const searchInput = document.getElementById('search-input');
+const resultCount = document.getElementById('result-count');
+const meditationEls = document.querySelectorAll('.meditation');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
+const paginationNumbers = document.getElementById('pagination-numbers');
+const resultsEl = document.getElementById('results');
+
+let selectedPodcast = 'all';
+let currentPage = 1;
+let filtered = [];
+
+function escapeRegExp(s) {
+    return s.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&');
+}
+
+function highlightText(text, term) {
+    if (!term) return text;
+    const re = new RegExp('(' + escapeRegExp(term) + ')', 'gi');
+    return text.replace(re, '<span class="highlight">$1</span>');
+}
+
+function applyFilters() {
+    const term = searchInput.value.toLowerCase().trim();
+    filtered = [];
+    meditationEls.forEach(el => {
+        const podcast = el.getAttribute('data-podcast');
+        const title = el.getAttribute('data-title');
+        const description = el.getAttribute('data-description');
+        const podcastMatch = selectedPodcast === 'all' || podcast === selectedPodcast;
+        const searchMatch = term === '' || title.includes(term) || description.includes(term);
+        if (podcastMatch && searchMatch) {
+            filtered.push({ element: el, originalTitle: el.getAttribute('data-original-title') });
+        }
+    });
+    currentPage = 1;
+    render(term);
+}
+
+function render(term, scroll) {
+    const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+
+    meditationEls.forEach(m => m.classList.add('hidden'));
+
+    filtered.forEach((item, index) => {
+        if (index >= startIndex && index < endIndex) {
+            const link = item.element.querySelector('.meditation-link');
+            item.element.classList.remove('hidden');
+            if (term) {
+                link.innerHTML = highlightText(item.originalTitle, term);
+            } else {
+                link.textContent = item.originalTitle;
+            }
+        }
+    });
+
+    if (filtered.length === 0) {
+        resultCount.textContent = 'No meditations found';
+    } else {
+        const showing = Math.min(filtered.length, endIndex) - startIndex;
+        resultCount.textContent =
+            'Showing ' + (startIndex + 1) + '\\u2013' + (startIndex + showing) +
+            ' of ' + filtered.length + ' meditations';
+    }
+
+    renderPagination(totalPages);
+
+    if (scroll && resultsEl) {
+        resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
+function renderPagination(totalPages) {
+    prevBtn.disabled = currentPage === 1;
+    nextBtn.disabled = currentPage === totalPages || totalPages === 0;
+    paginationNumbers.innerHTML = '';
+    if (totalPages <= 1) return;
+
+    const maxVisible = 7;
+    let pages = [];
+    if (totalPages <= maxVisible) {
+        for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else if (currentPage <= 4) {
+        pages = [1, 2, 3, 4, 5, '...', totalPages];
+    } else if (currentPage >= totalPages - 3) {
+        pages = [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+    } else {
+        pages = [1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages];
+    }
+
+    pages.forEach(page => {
+        if (page === '...') {
+            const ell = document.createElement('span');
+            ell.className = 'page-ellipsis';
+            ell.textContent = '...';
+            paginationNumbers.appendChild(ell);
+        } else {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'page-number' + (page === currentPage ? ' active' : '');
+            btn.textContent = page;
+            if (page === currentPage) btn.setAttribute('aria-current', 'page');
+            btn.addEventListener('click', () => goToPage(page));
+            paginationNumbers.appendChild(btn);
+        }
+    });
+}
+
+function goToPage(page) {
+    currentPage = page;
+    render(searchInput.value.toLowerCase().trim(), true);
+}
+
+filterPills.forEach(pill => {
+    pill.addEventListener('click', function () {
+        filterPills.forEach(p => { p.classList.remove('active'); p.setAttribute('aria-pressed', 'false'); });
+        this.classList.add('active');
+        this.setAttribute('aria-pressed', 'true');
+        selectedPodcast = this.getAttribute('data-podcast');
+        applyFilters();
+    });
+});
+
+searchInput.addEventListener('input', applyFilters);
+
+prevBtn.addEventListener('click', () => { if (currentPage > 1) goToPage(currentPage - 1); });
+nextBtn.addEventListener('click', () => {
+    const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+    if (currentPage < totalPages) goToPage(currentPage + 1);
+});
+
+// Whole-card click for mouse users (keyboard users use the real title link).
+// Ignore clicks on links and clicks made while selecting text.
+meditationEls.forEach(el => {
+    el.addEventListener('click', e => {
+        if (e.target.closest('a')) return;
+        if (window.getSelection().toString().length) return;
+        const link = el.querySelector('.meditation-link');
+        if (link) window.open(link.href, '_blank', 'noopener');
+    });
+});
+
+applyFilters();
+"""
+
+
+def build_json_ld(meditations: List[Dict]) -> str:
+    """Build schema.org structured data for the collection."""
+    item_list = {
+        "@type": "ItemList",
+        "itemListOrder": "https://schema.org/ItemListOrderDescending",
+        "numberOfItems": len(meditations),
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": i + 1,
+                "name": html_unescape(strip_tags(m['title'])).strip(),
+                "url": m['episode_url'] or m['feed_website'],
+            }
+            for i, m in enumerate(meditations)
+        ],
+    }
+    website = {
+        "@type": "WebSite",
+        "@id": SITE_URL + "#website",
+        "name": "Guided Meditations",
+        "url": SITE_URL,
+        "description": "A curated collection of guided meditations from dharma podcasts.",
+        "inLanguage": "en",
+        "author": {"@type": "Person", "name": "Alastair Rushworth", "url": "https://alastairrushworth.com"},
+        "publisher": {"@type": "Person", "name": "Alastair Rushworth"},
+    }
+    collection = {
+        "@type": "CollectionPage",
+        "@id": SITE_URL + "#webpage",
+        "url": SITE_URL,
+        "name": "Guided Meditations – Curated Collection from Dharma Podcasts",
+        "isPartOf": {"@id": SITE_URL + "#website"},
+        "inLanguage": "en",
+        "about": "guided meditation, mindfulness, dharma",
+        "mainEntity": item_list,
+    }
+    graph = {"@context": "https://schema.org", "@graph": [website, collection]}
+    return json.dumps(graph, ensure_ascii=False, indent=2)
+
 
 def generate_html(meditations: List[Dict], output_file: str):
     """
@@ -203,748 +752,228 @@ def generate_html(meditations: List[Dict], output_file: str):
     """
     # Sort by date, most recent first
     meditations.sort(key=lambda x: x['date'], reverse=True)
+    total_count = len(meditations)
 
-    # Get unique podcast names for filter pills
+    # Unique podcast names for filter pills
     podcast_names = sorted(set(m['feed_name'] for m in meditations))
-    podcast_pills = '\n'.join([f'<div class="filter-pill" data-podcast="{html_escape(name)}">{html_escape(name)}</div>' for name in podcast_names])
+    podcast_pills = '\n                '.join(
+        f'<button type="button" class="filter-pill" data-podcast="{html_escape(name)}" '
+        f'aria-pressed="false">{html_escape(name)}</button>'
+        for name in podcast_names
+    )
 
-    html = """<!DOCTYPE html>
+    json_ld = build_json_ld(meditations)
+    meta_description = (
+        f"Discover {total_count} guided meditations from renowned teachers including "
+        "Tara Brach, Jack Kornfield, Sharon Salzberg, Joseph Goldstein, and Ajahn Brahm. "
+        "Free mindfulness and dharma practices."
+    )
+    title = "Guided Meditations – Curated Collection from Dharma Podcasts"
+    og_image = SITE_URL + "og-image.png"
+
+    gtag = (
+        '<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y8XLWX2T51"></script>\n'
+        '    <script>\n'
+        '      window.dataLayer = window.dataLayer || [];\n'
+        '      function gtag(){dataLayer.push(arguments);}\n'
+        "      gtag('js', new Date());\n"
+        "      gtag('config', 'G-Y8XLWX2T51');\n"
+        '    </script>'
+    )
+
+    head = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Primary Meta Tags -->
-    <title>🧘 Guided Meditations - Curated Collection from Dharma Podcasts</title>
-    <meta name="title" content="🧘 Guided Meditations - Curated Collection from Dharma Podcasts">
-    <meta name="description" content="Discover {total_count} guided meditations from renowned teachers including Tara Brach, Jack Kornfield, Sharon Salzberg, Joseph Goldstein, and Ajahn Brahm. Free mindfulness and dharma practices.">
+    <title>{html_escape(title)}</title>
+    <meta name="title" content="{html_escape(title)}">
+    <meta name="description" content="{html_escape(meta_description)}">
     <meta name="keywords" content="guided meditation, mindfulness, dharma, buddhist meditation, Tara Brach, Jack Kornfield, Sharon Salzberg, Joseph Goldstein, Ajahn Brahm, meditation practice, body scan, breath meditation, compassion meditation, insight meditation">
     <meta name="author" content="Alastair Rushworth">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://alastairrushworth.github.io/meditation/">
+    <meta name="theme-color" content="#faf8f4">
+    <link rel="canonical" href="{SITE_URL}">
+
+    <!-- Icons -->
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="manifest" href="site.webmanifest">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://alastairrushworth.github.io/meditation/">
-    <meta property="og:title" content="🧘 Guided Meditations - Curated Collection from Dharma Podcasts">
-    <meta property="og:description" content="Discover {total_count} guided meditations from renowned teachers including Tara Brach, Jack Kornfield, Sharon Salzberg, Joseph Goldstein, and Ajahn Brahm. Free mindfulness and dharma practices.">
-    <meta property="og:site_name" content="🧘 Guided Meditations">
+    <meta property="og:url" content="{SITE_URL}">
+    <meta property="og:title" content="{html_escape(title)}">
+    <meta property="og:description" content="{html_escape(meta_description)}">
+    <meta property="og:site_name" content="Guided Meditations">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:image" content="{og_image}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Guided Meditations — a curated collection from dharma podcasts">
 
     <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_card">
-    <meta property="twitter:url" content="https://alastairrushworth.github.io/meditation/">
-    <meta property="twitter:title" content="🧘 Guided Meditations - Curated Collection from Dharma Podcasts">
-    <meta property="twitter:description" content="Discover {total_count} guided meditations from renowned teachers including Tara Brach, Jack Kornfield, Sharon Salzberg, Joseph Goldstein, and Ajahn Brahm. Free mindfulness and dharma practices.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{SITE_URL}">
+    <meta name="twitter:title" content="{html_escape(title)}">
+    <meta name="twitter:description" content="{html_escape(meta_description)}">
+    <meta name="twitter:image" content="{og_image}">
 
     <!-- Structured Data / JSON-LD -->
     <script type="application/ld+json">
-    {{
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "Guided Meditations",
-      "description": "A curated collection of guided meditations from dharma podcasts",
-      "url": "https://alastairrushworth.github.io/meditation/",
-      "author": {{
-        "@type": "Person",
-        "name": "Alastair Rushworth",
-        "url": "https://alastairrushworth.com"
-      }},
-      "publisher": {{
-        "@type": "Person",
-        "name": "Alastair Rushworth"
-      }},
-      "inLanguage": "en-US",
-      "keywords": "guided meditation, mindfulness, dharma, buddhist meditation, meditation practice"
-    }}
+{json_ld}
     </script>
 
-    <style>
-        * {{
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }}
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap">
 
-        body {{
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Helvetica Neue', sans-serif;
-            line-height: 1.6;
-            color: #2c3e50;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
-            min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
-        }}
-
-        .container {{
-            max-width: 900px;
-            margin: 0 auto;
-            padding-bottom: 60px;
-        }}
-
-        header {{
-            padding: 48px 24px 32px;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        }}
-
-        h1 {{
-            font-size: 2.5em;
-            margin-bottom: 6px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -0.02em;
-        }}
-
-        .subtitle {{
-            font-size: 1em;
-            color: #64748b;
-            font-weight: 400;
-            margin-bottom: 24px;
-        }}
-
-        .search-box {{
-            max-width: 500px;
-            margin: 0 auto;
-            position: relative;
-        }}
-
-        .search-input {{
-            width: 100%;
-            padding: 14px 20px;
-            border: 2px solid transparent;
-            border-radius: 12px;
-            font-size: 1em;
-            background: white;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-            transition: all 0.3s ease;
-        }}
-
-        .search-input:focus {{
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
-        }}
-
-        .search-input::placeholder {{
-            color: #94a3b8;
-        }}
-
-        .filters {{
-            padding: 16px 24px;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }}
-
-        .filter-pills {{
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            justify-content: center;
-            min-height: 32px;
-        }}
-
-        .filter-pill {{
-            padding: 6px 14px;
-            border-radius: 16px;
-            border: 1.5px solid #e2e8f0;
-            background: white;
-            color: #64748b;
-            font-size: 0.8em;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-            user-select: none;
-        }}
-
-        .filter-pill:hover {{
-            border-color: #cbd5e1;
-            background: #f8fafc;
-        }}
-
-        .filter-pill.active {{
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-color: transparent;
-        }}
-
-        .result-count {{
-            text-align: center;
-            margin: 16px 0 8px;
-            color: #94a3b8;
-            font-size: 0.9em;
-        }}
-
-        main {{
-            padding: 0 24px;
-        }}
-
-        .meditation {{
-            background: white;
-            margin-bottom: 16px;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }}
-
-        .meditation:hover {{
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-            transform: translateY(-2px);
-        }}
-
-        .meditation-content {{
-            padding: 24px;
-            overflow: hidden;
-        }}
-
-        .meditation-meta {{
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-            flex-wrap: wrap;
-        }}
-
-        .meditation-source {{
-            font-size: 0.8em;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: #667eea;
-            text-decoration: none;
-        }}
-
-        .meditation-date {{
-            font-size: 0.85em;
-            color: #94a3b8;
-        }}
-
-        .meta-dot {{
-            width: 3px;
-            height: 3px;
-            background: #cbd5e1;
-            border-radius: 50%;
-        }}
-
-        .meditation-title {{
-            font-size: 1.25em;
-            font-weight: 600;
-            color: #1e293b;
-            line-height: 1.4;
-            margin-bottom: 10px;
-        }}
-
-        .meditation-description {{
-            color: #64748b;
-            line-height: 1.6;
-            font-size: 0.95em;
-            overflow-wrap: break-word;
-            word-wrap: break-word;
-            word-break: break-word;
-        }}
-
-        .meditation-description a {{
-            color: #667eea;
-            text-decoration: underline;
-            word-break: break-all;
-            overflow-wrap: anywhere;
-        }}
-
-        .meditation-description a:hover {{
-            color: #764ba2;
-        }}
-
-        footer {{
-            text-align: center;
-            padding: 40px 24px;
-            color: #94a3b8;
-            font-size: 0.85em;
-        }}
-
-        footer p {{
-            margin: 6px 0;
-        }}
-
-        footer a {{
-            color: #667eea;
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }}
-
-        footer a:hover {{
-            color: #764ba2;
-            text-decoration: underline;
-        }}
-
-        .pagination {{
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 12px;
-            padding: 32px 24px;
-            flex-wrap: wrap;
-        }}
-
-        .pagination-btn {{
-            padding: 10px 18px;
-            border: 2px solid #e2e8f0;
-            background: white;
-            color: #64748b;
-            font-size: 0.9em;
-            font-weight: 500;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-            user-select: none;
-        }}
-
-        .pagination-btn:hover:not(:disabled) {{
-            border-color: #667eea;
-            color: #667eea;
-            background: #f8fafc;
-        }}
-
-        .pagination-btn:disabled {{
-            opacity: 0.4;
-            cursor: not-allowed;
-        }}
-
-        .pagination-numbers {{
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }}
-
-        .page-number {{
-            padding: 8px 12px;
-            border: 2px solid #e2e8f0;
-            background: white;
-            color: #64748b;
-            font-size: 0.9em;
-            font-weight: 500;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-            user-select: none;
-            min-width: 40px;
-            text-align: center;
-        }}
-
-        .page-number:hover {{
-            border-color: #cbd5e1;
-            background: #f8fafc;
-        }}
-
-        .page-number.active {{
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-color: transparent;
-        }}
-
-        .page-ellipsis {{
-            padding: 8px 4px;
-            color: #94a3b8;
-            user-select: none;
-        }}
-
-        .hidden {{
-            display: none !important;
-        }}
-
-        .highlight {{
-            background: linear-gradient(135deg, #fef08a 0%, #fde047 100%);
-            padding: 2px 4px;
-            border-radius: 3px;
-        }}
-
-        /* Scrollbar styling */
-        ::-webkit-scrollbar {{
-            width: 8px;
-            height: 8px;
-        }}
-
-        ::-webkit-scrollbar-track {{
-            background: transparent;
-        }}
-
-        ::-webkit-scrollbar-thumb {{
-            background: #cbd5e1;
-            border-radius: 4px;
-        }}
-
-        ::-webkit-scrollbar-thumb:hover {{
-            background: #94a3b8;
-        }}
-
-        @media (max-width: 768px) {{
-            h1 {{
-                font-size: 2em;
-            }}
-
-            header {{
-                padding: 32px 20px 24px;
-            }}
-
-            .subtitle {{
-                font-size: 0.9em;
-            }}
-
-            main {{
-                padding: 0 16px;
-            }}
-
-            .filters {{
-                padding: 16px;
-            }}
-
-            .filter-pills {{
-                justify-content: flex-start;
-            }}
-
-            .meditation-content {{
-                padding: 20px;
-            }}
-
-            .meditation-title {{
-                font-size: 1.1em;
-            }}
-
-            .meditation-description {{
-                font-size: 0.9em;
-            }}
-
-            .pagination {{
-                padding: 24px 16px;
-                gap: 8px;
-            }}
-
-            .pagination-btn {{
-                padding: 8px 14px;
-                font-size: 0.85em;
-            }}
-
-            .page-number {{
-                padding: 6px 10px;
-                font-size: 0.85em;
-                min-width: 36px;
-            }}
-        }}
-    </style>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y8XLWX2T51"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){{dataLayer.push(arguments);}}
-      gtag('js', new Date());
-
-      gtag('config', 'G-Y8XLWX2T51');
-    </script>
+    <style>{CSS}</style>
+    {gtag}
 </head>
-<body>
+"""
+
+    lotus_svg = (
+        '<svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true" '
+        'focusable="false"><g fill="#5b7553" fill-opacity="0.82">'
+        '<path d="M32 50 C27 42 27 27 32 15 C37 27 37 42 32 50Z" transform="rotate(-75 32 50)"/>'
+        '<path d="M32 50 C27 42 27 27 32 15 C37 27 37 42 32 50Z" transform="rotate(-50 32 50)"/>'
+        '<path d="M32 50 C27 42 27 27 32 15 C37 27 37 42 32 50Z" transform="rotate(-25 32 50)"/>'
+        '<path d="M32 50 C27 42 27 27 32 15 C37 27 37 42 32 50Z" transform="rotate(0 32 50)"/>'
+        '<path d="M32 50 C27 42 27 27 32 15 C37 27 37 42 32 50Z" transform="rotate(25 32 50)"/>'
+        '<path d="M32 50 C27 42 27 27 32 15 C37 27 37 42 32 50Z" transform="rotate(50 32 50)"/>'
+        '<path d="M32 50 C27 42 27 27 32 15 C37 27 37 42 32 50Z" transform="rotate(75 32 50)"/>'
+        '</g></svg>'
+    )
+    search_icon = (
+        '<svg class="search-icon" viewBox="0 0 24 24" fill="none" '
+        'stroke="currentColor" stroke-width="2" stroke-linecap="round" '
+        'aria-hidden="true" focusable="false">'
+        '<circle cx="11" cy="11" r="7"></circle>'
+        '<line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>'
+    )
+
+    body_open = f"""<body>
     <div class="container">
         <header>
-            <h1>🧘 Guided Meditations</h1>
-            <p class="subtitle">A curated collection from dharma podcasts</p>
-            <div class="search-box">
-                <input type="text" id="search-input" class="search-input" placeholder="Search meditations...">
+            <div class="brand">
+                {lotus_svg}
+                <h1>Guided Meditations</h1>
             </div>
+            <p class="subtitle">A curated collection from dharma podcasts</p>
+            <form class="search-box" role="search" onsubmit="return false;">
+                <label for="search-input" class="sr-only">Search meditations</label>
+                {search_icon}
+                <input type="search" id="search-input" class="search-input" placeholder="Search meditations…" autocomplete="off">
+            </form>
         </header>
 
-        <div class="filters">
+        <nav class="filters" aria-label="Filter by source">
             <div class="filter-pills" id="filter-pills">
-                <div class="filter-pill active" data-podcast="all">All</div>
+                <button type="button" class="filter-pill active" data-podcast="all" aria-pressed="true">All</button>
                 {podcast_pills}
             </div>
-            <div class="result-count" id="result-count">Showing {total_count} meditations</div>
-        </div>
+        </nav>
+        <p class="result-count" id="result-count" role="status" aria-live="polite">Showing {total_count} meditations</p>
 
-        <main>
+        <main id="results">
 """
 
-    for meditation in meditations:
-        date_str = meditation['date'].strftime('%B %d, %Y')
+    cards = []
+    for m in meditations:
+        date_str = m['date'].strftime('%B %d, %Y')
+        date_iso = m['date'].strftime('%Y-%m-%d')
+        duration_str = format_duration(m.get('duration'))
 
-        # Format duration if available
-        duration_str = format_duration(meditation.get('duration'))
+        title_plain = html_unescape(strip_tags(m['title'])).strip()
+        title_attr = html_escape(title_plain)
+        title_search = html_escape(title_plain.lower())
 
-        # Strip HTML tags and escape HTML entities
-        title = re.sub('<[^<]+?>', '', meditation['title'])
-        title = html_escape(title)
+        description_html = process_description(m['description'])
+        desc_plain = ' '.join(html_unescape(strip_tags(m['description'])).split())
+        desc_search = html_escape(desc_plain.lower())
 
-        # Process description: strip HTML, remove asterisks, convert URLs to links
-        description_html = process_description(meditation['description'])
+        feed_website = html_escape(m['feed_website'])
+        episode_url = html_escape(m['episode_url'])
+        feed_name = html_escape(m['feed_name'])
 
-        # Create a plain text version for search data attributes (without HTML links)
-        description_plain = re.sub('<[^<]+?>', '', description_html)
-
-        # Escape URLs
-        feed_website = html_escape(meditation['feed_website'])
-        episode_url = html_escape(meditation['episode_url'])
-        feed_name = html_escape(meditation['feed_name'])
-
-        # Build metadata line with date and optional duration
-        metadata_html = f'<div class="meditation-date">{date_str}</div>'
+        meta_html = f'<time class="meditation-date" datetime="{date_iso}">{date_str}</time>'
         if duration_str:
-            metadata_html += f'\n                        <div class="meta-dot"></div>\n                        <div class="meditation-date">{duration_str}</div>'
+            meta_html += (
+                '\n                        <span class="meta-dot" aria-hidden="true"></span>'
+                f'\n                        <span class="meditation-date">{duration_str}</span>'
+            )
 
-        html += f"""
-            <div class="meditation" data-podcast="{feed_name}" data-title="{title.lower()}" data-description="{description_plain.lower()}" data-original-title="{title}" data-url="{episode_url}">
+        cards.append(f"""
+            <article class="meditation" data-podcast="{feed_name}" data-title="{title_search}" data-description="{desc_search}" data-original-title="{title_attr}">
                 <div class="meditation-content">
                     <div class="meditation-meta">
-                        <a href="{feed_website}" class="meditation-source" target="_blank" onclick="event.stopPropagation();">{feed_name}</a>
-                        <div class="meta-dot"></div>
-                        {metadata_html}
+                        <a href="{feed_website}" class="meditation-source" target="_blank" rel="noopener noreferrer">{feed_name}</a>
+                        <span class="meta-dot" aria-hidden="true"></span>
+                        {meta_html}
                     </div>
-                    <div class="meditation-title">{title}</div>
+                    <h2 class="meditation-title"><a class="meditation-link" href="{episode_url}" target="_blank" rel="noopener noreferrer">{title_attr}</a></h2>
                     <div class="meditation-description">{description_html}</div>
                 </div>
-            </div>
-"""
+            </article>
+""")
 
-    html += """
+    body_close = """
         </main>
 
-        <div class="pagination" id="pagination">
-            <button class="pagination-btn" id="prev-btn" disabled>&laquo; Previous</button>
+        <nav class="pagination" id="pagination" aria-label="Pagination">
+            <button type="button" class="pagination-btn" id="prev-btn" disabled>&laquo; Previous</button>
             <div class="pagination-numbers" id="pagination-numbers"></div>
-            <button class="pagination-btn" id="next-btn">Next &raquo;</button>
-        </div>
+            <button type="button" class="pagination-btn" id="next-btn">Next &raquo;</button>
+        </nav>
 
         <footer>
             <p>Last updated: {update_time}</p>
-            <p>Generated from podcast RSS feeds</p>
+            <p>Generated from podcast RSS feeds &middot; not affiliated with the teachers or centres listed</p>
             <p>
-                <a href="https://github.com/alastairrushworth/meditation" target="_blank">View on GitHub</a> |
-                Made by <a href="https://alastairrushworth.com" target="_blank">alastairrushworth.com</a>
+                <a href="https://github.com/alastairrushworth/meditation" target="_blank" rel="noopener noreferrer">View on GitHub</a> &middot;
+                Made by <a href="https://alastairrushworth.com" target="_blank" rel="noopener noreferrer">alastairrushworth.com</a>
             </p>
         </footer>
     </div>
 
     <script>
-        // Filter, search, and pagination functionality
-        const filterPills = document.querySelectorAll('.filter-pill');
-        const searchInput = document.getElementById('search-input');
-        const resultCount = document.getElementById('result-count');
-        const meditations = document.querySelectorAll('.meditation');
-        const prevBtn = document.getElementById('prev-btn');
-        const nextBtn = document.getElementById('next-btn');
-        const paginationNumbers = document.getElementById('pagination-numbers');
-
-        const ITEMS_PER_PAGE = 25;
-        let selectedPodcast = 'all';
-        let currentPage = 1;
-        let filteredMeditations = [];
-
-        function escapeRegExp(string) {{
-            return string.replace(/[.*+?^${{}}()|[\\]\\\\]/g, '\\\\$&');
-        }}
-
-        function highlightText(text, searchTerm) {{
-            if (!searchTerm) return text;
-
-            const escapedTerm = escapeRegExp(searchTerm);
-            const regex = new RegExp(`(${{escapedTerm}})`, 'gi');
-            return text.replace(regex, '<span class="highlight">$1</span>');
-        }}
-
-        function applyFilters() {{
-            const searchTerm = searchInput.value.toLowerCase().trim();
-            filteredMeditations = [];
-
-            // First pass: determine which meditations match filters
-            meditations.forEach(meditation => {{
-                const podcast = meditation.getAttribute('data-podcast');
-                const title = meditation.getAttribute('data-title');
-                const description = meditation.getAttribute('data-description');
-                const originalTitle = meditation.getAttribute('data-original-title');
-
-                // Check podcast filter
-                const podcastMatch = selectedPodcast === 'all' || podcast === selectedPodcast;
-
-                // Check search term
-                const searchMatch = searchTerm === '' ||
-                                   title.includes(searchTerm) ||
-                                   description.includes(searchTerm);
-
-                if (podcastMatch && searchMatch) {{
-                    filteredMeditations.push({{
-                        element: meditation,
-                        originalTitle: originalTitle
-                    }});
-                }}
-            }});
-
-            // Reset to page 1 when filters change
-            currentPage = 1;
-
-            // Apply pagination
-            applyPagination(searchTerm);
-        }}
-
-        function applyPagination(searchTerm = '') {{
-            const totalPages = Math.ceil(filteredMeditations.length / ITEMS_PER_PAGE);
-            const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-            const endIndex = startIndex + ITEMS_PER_PAGE;
-
-            // Hide all meditations first
-            meditations.forEach(m => m.classList.add('hidden'));
-
-            // Show only the meditations for the current page
-            filteredMeditations.forEach((item, index) => {{
-                const meditation = item.element;
-                const titleElement = meditation.querySelector('.meditation-title');
-
-                if (index >= startIndex && index < endIndex) {{
-                    meditation.classList.remove('hidden');
-
-                    // Apply highlighting to title if there's a search term
-                    // Description is left as-is to preserve HTML links
-                    if (searchTerm) {{
-                        titleElement.innerHTML = highlightText(item.originalTitle, searchTerm);
-                    }} else {{
-                        titleElement.textContent = item.originalTitle;
-                    }}
-                }}
-            }});
-
-            // Update result count
-            const totalText = selectedPodcast === 'all' ? '{total_count}' : '';
-            const showing = Math.min(filteredMeditations.length, endIndex) - startIndex;
-
-            if (filteredMeditations.length === 0) {{
-                resultCount.textContent = 'No meditations found';
-            }} else if (totalText && filteredMeditations.length < {total_count}) {{
-                resultCount.textContent = `Showing ${{startIndex + 1}}-${{startIndex + showing}} of ${{filteredMeditations.length}} meditations`;
-            }} else {{
-                resultCount.textContent = `Showing ${{startIndex + 1}}-${{startIndex + showing}} of ${{filteredMeditations.length}} meditations`;
-            }}
-
-            // Update pagination controls
-            renderPagination(totalPages);
-
-            // Scroll to top
-            window.scrollTo({{ top: 0, behavior: 'smooth' }});
-        }}
-
-        function renderPagination(totalPages) {{
-            // Update prev/next buttons
-            prevBtn.disabled = currentPage === 1;
-            nextBtn.disabled = currentPage === totalPages || totalPages === 0;
-
-            // Clear pagination numbers
-            paginationNumbers.innerHTML = '';
-
-            if (totalPages <= 1) {{
-                return; // Don't show pagination for single page
-            }}
-
-            // Generate page numbers with ellipsis
-            const maxVisible = 7;
-            let pages = [];
-
-            if (totalPages <= maxVisible) {{
-                // Show all pages
-                for (let i = 1; i <= totalPages; i++) {{
-                    pages.push(i);
-                }}
-            }} else {{
-                // Show pages with ellipsis
-                if (currentPage <= 4) {{
-                    pages = [1, 2, 3, 4, 5, '...', totalPages];
-                }} else if (currentPage >= totalPages - 3) {{
-                    pages = [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
-                }} else {{
-                    pages = [1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages];
-                }}
-            }}
-
-            // Render page numbers
-            pages.forEach(page => {{
-                if (page === '...') {{
-                    const ellipsis = document.createElement('span');
-                    ellipsis.className = 'page-ellipsis';
-                    ellipsis.textContent = '...';
-                    paginationNumbers.appendChild(ellipsis);
-                }} else {{
-                    const pageBtn = document.createElement('div');
-                    pageBtn.className = 'page-number' + (page === currentPage ? ' active' : '');
-                    pageBtn.textContent = page;
-                    pageBtn.addEventListener('click', () => goToPage(page));
-                    paginationNumbers.appendChild(pageBtn);
-                }}
-            }});
-        }}
-
-        function goToPage(page) {{
-            currentPage = page;
-            const searchTerm = searchInput.value.toLowerCase().trim();
-            applyPagination(searchTerm);
-        }}
-
-        // Filter pill click handlers
-        filterPills.forEach(pill => {{
-            pill.addEventListener('click', function() {{
-                filterPills.forEach(p => p.classList.remove('active'));
-                this.classList.add('active');
-                selectedPodcast = this.getAttribute('data-podcast');
-                applyFilters();
-            }});
-        }});
-
-        // Search input handler
-        searchInput.addEventListener('input', applyFilters);
-
-        // Pagination button handlers
-        prevBtn.addEventListener('click', () => {{
-            if (currentPage > 1) {{
-                goToPage(currentPage - 1);
-            }}
-        }});
-
-        nextBtn.addEventListener('click', () => {{
-            const totalPages = Math.ceil(filteredMeditations.length / ITEMS_PER_PAGE);
-            if (currentPage < totalPages) {{
-                goToPage(currentPage + 1);
-            }}
-        }});
-
-        // Make meditation cards clickable
-        meditations.forEach(meditation => {{
-            meditation.addEventListener('click', function() {{
-                const url = this.getAttribute('data-url');
-                if (url) {{
-                    window.open(url, '_blank');
-                }}
-            }});
-        }});
-
-        // Initialize on page load
-        applyFilters();
+const ITEMS_PER_PAGE = 25;
+{JS}
     </script>
 </body>
 </html>
-"""
+""".format(update_time=datetime.now().strftime('%B %d, %Y'), JS=JS)
 
-    html = html.format(
-        total_count=len(meditations),
-        podcast_pills=podcast_pills,
-        update_time=datetime.now().strftime('%B %d, %Y at %I:%M %p')
-    )
+    html = head + body_open + ''.join(cards) + body_close
 
     with open(output_file, 'w', encoding='utf-8') as f:
         f.write(html)
 
-    print(f"Generated {output_file} with {len(meditations)} meditations")
+    print(f"Generated {output_file} with {total_count} meditations")
+
+
+def generate_sitemap(output_file: str):
+    """Write a minimal sitemap for the single-page site."""
+    lastmod = datetime.now(timezone.utc).strftime('%Y-%m-%d')
+    sitemap = f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>{SITE_URL}</loc>
+    <lastmod>{lastmod}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>
+"""
+    with open(output_file, 'w', encoding='utf-8') as f:
+        f.write(sitemap)
+    print(f"Generated {output_file}")
+
 
 def main():
     """
@@ -962,11 +991,12 @@ def main():
         meditations = parse_feed(feed['url'], feed['name'], feed['website'])
         all_meditations.extend(meditations)
 
-    # Generate HTML
-    output_file = Path(__file__).parent / 'index.html'
-    generate_html(all_meditations, str(output_file))
+    # Generate outputs
+    here = Path(__file__).parent
+    generate_html(all_meditations, str(here / 'index.html'))
+    generate_sitemap(str(here / 'sitemap.xml'))
 
-    print(f"\nSuccess! Open {output_file} in your browser to view the meditations.")
+    print(f"\nSuccess! Open {here / 'index.html'} in your browser to view the meditations.")
 
 if __name__ == '__main__':
     main()

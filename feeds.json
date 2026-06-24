@@ -52,13 +52,33 @@
     },
     {
       "name": "Ajahn Brahm Podcast",
-      "url": "https://podcast.bswa.org/feed.xml",
+      "url": "https://deeperdhamma.podbean.com/feed.xml",
       "website": "https://bswa.org/"
     },
     {
       "name": "Secular Buddhism",
       "url": "https://feeds.acast.com/public/shows/6359a8448c5fe9001207c0ac",
       "website": "https://secularbuddhism.com/"
+    },
+    {
+      "name": "Gaia House",
+      "url": "https://gaia.dharmaseed.org/feeds/recordings/",
+      "website": "https://gaiahouse.co.uk/"
+    },
+    {
+      "name": "Barre Center for Buddhist Studies",
+      "url": "https://BCBS.dharmaseed.org/feeds/recordings/",
+      "website": "https://www.buddhistinquiry.org/"
+    },
+    {
+      "name": "Insight Santa Cruz",
+      "url": "https://ISC.dharmaseed.org/feeds/recordings/",
+      "website": "https://www.insightsantacruz.org/"
+    },
+    {
+      "name": "Cambridge Insight Meditation Center",
+      "url": "https://cimc.dharmaseed.org/feeds/recordings/",
+      "website": "https://www.cambridgeinsight.org/"
     }
   ]
 }

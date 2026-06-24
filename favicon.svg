@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Lotus">
+  <rect width="64" height="64" rx="14" fill="#faf8f4"/>
+  <g fill="#5b7553" fill-opacity="0.82">
+    <path d="M32 50 C27 42 27 27 32 15 C37 27 37 42 32 50Z" transform="rotate(-75 32.0 50.0)"/>
+    <path d="M32 50 C27 42 27 27 32 15 C37 27 37 42 32 50Z" transform="rotate(-50 32.0 50.0)"/>
+    <path d="M32 50 C27 42 27 27 32 15 C37 27 37 42 32 50Z" transform="rotate(-25 32.0 50.0)"/>
+    <path d="M32 50 C27 42 27 27 32 15 C37 27 37 42 32 50Z" transform="rotate(0 32.0 50.0)"/>
+    <path d="M32 50 C27 42 27 27 32 15 C37 27 37 42 32 50Z" transform="rotate(25 32.0 50.0)"/>
+    <path d="M32 50 C27 42 27 27 32 15 C37 27 37 42 32 50Z" transform="rotate(50 32.0 50.0)"/>
+    <path d="M32 50 C27 42 27 27 32 15 C37 27 37 42 32 50Z" transform="rotate(75 32.0 50.0)"/>
+  </g>
+</svg>
