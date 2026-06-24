@@ -162,27 +162,91 @@ def format_duration(duration_str: str) -> str:
     except (ValueError, AttributeError):
         return None
 
+def iso_duration(duration_str: str) -> str:
+    """Convert a feed duration (HH:MM:SS, MM:SS or seconds) to an ISO 8601 duration."""
+    if not duration_str:
+        return None
+    try:
+        raw = str(duration_str)
+        if ':' in raw:
+            parts = [int(p) for p in raw.split(':')]
+            if len(parts) == 3:
+                hours, minutes, seconds = parts
+            elif len(parts) == 2:
+                hours, minutes, seconds = 0, parts[0], parts[1]
+            else:
+                return None
+        else:
+            total = int(raw)
+            hours, minutes, seconds = total // 3600, (total % 3600) // 60, total % 60
+    except (ValueError, AttributeError):
+        return None
+    out = 'PT'
+    if hours:
+        out += f'{hours}H'
+    if minutes:
+        out += f'{minutes}M'
+    if seconds:
+        out += f'{seconds}S'
+    return out if out != 'PT' else None
+
 def strip_tags(text: str) -> str:
     """Remove HTML tags from a string."""
     return re.sub('<[^<]+?>', '', text or '')
 
+# Boilerplate that some feeds append to every episode description (donation
+# pleas, transcript notices, licence text, music credits). It carries no
+# meditation-specific value and, repeated across 100+ cards, reads as templated
+# / thin content to search engines. All of it trails the useful description, so
+# we truncate at the first marker we recognise.
+_BOILERPLATE_MARKERS = (
+    'video of this talk is available',
+    'machine generated transcript',
+    'machine-generated transcript',
+    'download transcript',
+    'for more talks',
+    'if you have enjoyed this talk',
+    'please consider supporting',
+    'this talk is licensed',
+    'introduction music is from',
+)
+
+def strip_boilerplate(text: str) -> str:
+    """Drop trailing per-feed boilerplate, keeping the meditation-specific intro."""
+    lowered = text.lower()
+    cut = len(text)
+    for marker in _BOILERPLATE_MARKERS:
+        idx = lowered.find(marker)
+        if idx != -1:
+            cut = min(cut, idx)
+    trimmed = text[:cut].strip()
+    if cut < len(text):
+        # The boilerplate began mid-sentence (e.g. "...mind. Our introduction
+        # music is from..."). Drop a short orphaned lead-in left after the last
+        # complete sentence, but never a real trailing sentence.
+        last = max(trimmed.rfind('.'), trimmed.rfind('!'), trimmed.rfind('?'))
+        if last != -1 and len(trimmed[last + 1:].split()) <= 3:
+            trimmed = trimmed[:last + 1]
+    return trimmed
+
+def description_plain(description: str) -> str:
+    """Plain-text description with HTML, asterisk separators and feed boilerplate removed."""
+    text = html_unescape(strip_tags(description))
+    text = re.sub(r'\*{3,}', '', text)
+    text = strip_boilerplate(text)
+    return ' '.join(text.split())
+
 def process_description(description: str) -> str:
     """
-    Process description text: strip HTML, remove asterisks, truncate to 150 words,
-    escape HTML, and convert URLs to links.
+    Clean a description (strip HTML / boilerplate), truncate to 150 words,
+    escape HTML, and convert any remaining URLs to links.
     """
-    # Strip HTML tags
-    description = strip_tags(description)
-
-    # Remove multiple asterisks (3 or more)
-    description = re.sub(r'\*{3,}', '', description)
+    description = description_plain(description)
 
     # Truncate to 150 words
     words = description.split()
     if len(words) > 150:
         description = ' '.join(words[:150]) + '...'
-    else:
-        description = ' '.join(words)
 
     # Escape HTML entities
     description = html_escape(description)
@@ -328,36 +392,14 @@ h1 {
 
 .search-input::placeholder { color: #a8a299; }
 
-/* --- Filters ---------------------------------------------------------- */
-.filters { padding: 18px 24px 0; }
-
-.filter-pills {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.filter-pill {
-    padding: 6px 14px;
-    border-radius: 999px;
-    border: 1.5px solid var(--border);
-    background: var(--surface);
+.intro {
+    max-width: 620px;
+    margin: 22px auto 0;
+    padding: 0 24px;
+    text-align: center;
     color: var(--text-soft);
-    font-family: inherit;
-    font-size: 0.82rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.18s ease;
-    white-space: nowrap;
-}
-
-.filter-pill:hover { border-color: #cabfae; background: var(--bg-soft); }
-
-.filter-pill.active {
-    background: var(--accent);
-    color: #fff;
-    border-color: var(--accent);
+    font-size: 0.95rem;
+    line-height: 1.7;
 }
 
 .result-count {
@@ -546,8 +588,8 @@ input:focus-visible,
     h1 { font-size: 2.1rem; }
     header { padding: 30px 18px 22px; }
     .subtitle { font-size: 0.92rem; }
+    .intro { font-size: 0.9rem; }
     main { padding: 8px 16px 0; }
-    .filters { padding: 16px 16px 0; }
     .meditation-content { padding: 18px 18px; }
     .meditation-title { font-size: 1.14rem; }
     .meditation-description { font-size: 0.9rem; }
@@ -557,7 +599,6 @@ input:focus-visible,
 
 
 JS = """
-const filterPills = document.querySelectorAll('.filter-pill');
 const searchInput = document.getElementById('search-input');
 const resultCount = document.getElementById('result-count');
 const meditationEls = document.querySelectorAll('.meditation');
@@ -566,7 +607,6 @@ const nextBtn = document.getElementById('next-btn');
 const paginationNumbers = document.getElementById('pagination-numbers');
 const resultsEl = document.getElementById('results');
 
-let selectedPodcast = 'all';
 let currentPage = 1;
 let filtered = [];
 
@@ -584,12 +624,10 @@ function applyFilters() {
     const term = searchInput.value.toLowerCase().trim();
     filtered = [];
     meditationEls.forEach(el => {
-        const podcast = el.getAttribute('data-podcast');
         const title = el.getAttribute('data-title');
         const description = el.getAttribute('data-description');
-        const podcastMatch = selectedPodcast === 'all' || podcast === selectedPodcast;
         const searchMatch = term === '' || title.includes(term) || description.includes(term);
-        if (podcastMatch && searchMatch) {
+        if (searchMatch) {
             filtered.push({ element: el, originalTitle: el.getAttribute('data-original-title') });
         }
     });
@@ -673,16 +711,6 @@ function goToPage(page) {
     render(searchInput.value.toLowerCase().trim(), true);
 }
 
-filterPills.forEach(pill => {
-    pill.addEventListener('click', function () {
-        filterPills.forEach(p => { p.classList.remove('active'); p.setAttribute('aria-pressed', 'false'); });
-        this.classList.add('active');
-        this.setAttribute('aria-pressed', 'true');
-        selectedPodcast = this.getAttribute('data-podcast');
-        applyFilters();
-    });
-});
-
 searchInput.addEventListener('input', applyFilters);
 
 prevBtn.addEventListener('click', () => { if (currentPage > 1) goToPage(currentPage - 1); });
@@ -708,19 +736,24 @@ applyFilters();
 
 def build_json_ld(meditations: List[Dict]) -> str:
     """Build schema.org structured data for the collection."""
+    def list_item(position: int, m: Dict) -> Dict:
+        item = {
+            "@type": "PodcastEpisode",
+            "name": html_unescape(strip_tags(m['title'])).strip(),
+            "url": m['episode_url'] or m['feed_website'],
+            "datePublished": m['date'].strftime('%Y-%m-%d'),
+            "partOfSeries": {"@type": "PodcastSeries", "name": m['feed_name']},
+        }
+        duration = iso_duration(m.get('duration'))
+        if duration:
+            item["duration"] = duration
+        return {"@type": "ListItem", "position": position, "item": item}
+
     item_list = {
         "@type": "ItemList",
         "itemListOrder": "https://schema.org/ItemListOrderDescending",
         "numberOfItems": len(meditations),
-        "itemListElement": [
-            {
-                "@type": "ListItem",
-                "position": i + 1,
-                "name": html_unescape(strip_tags(m['title'])).strip(),
-                "url": m['episode_url'] or m['feed_website'],
-            }
-            for i, m in enumerate(meditations)
-        ],
+        "itemListElement": [list_item(i + 1, m) for i, m in enumerate(meditations)],
     }
     website = {
         "@type": "WebSite",
@@ -754,19 +787,10 @@ def generate_html(meditations: List[Dict], output_file: str):
     meditations.sort(key=lambda x: x['date'], reverse=True)
     total_count = len(meditations)
 
-    # Unique podcast names for filter pills
-    podcast_names = sorted(set(m['feed_name'] for m in meditations))
-    podcast_pills = '\n                '.join(
-        f'<button type="button" class="filter-pill" data-podcast="{html_escape(name)}" '
-        f'aria-pressed="false">{html_escape(name)}</button>'
-        for name in podcast_names
-    )
-
     json_ld = build_json_ld(meditations)
     meta_description = (
-        f"Discover {total_count} guided meditations from renowned teachers including "
-        "Tara Brach, Jack Kornfield, Sharon Salzberg, Joseph Goldstein, and Ajahn Brahm. "
-        "Free mindfulness and dharma practices."
+        f"Browse {total_count} free guided meditations from teachers like Tara Brach, "
+        "Jack Kornfield & Sharon Salzberg — mindfulness, body scan and metta practice."
     )
     title = "Guided Meditations – Curated Collection from Dharma Podcasts"
     og_image = SITE_URL + "og-image.png"
@@ -791,7 +815,6 @@ def generate_html(meditations: List[Dict], output_file: str):
     <title>{html_escape(title)}</title>
     <meta name="title" content="{html_escape(title)}">
     <meta name="description" content="{html_escape(meta_description)}">
-    <meta name="keywords" content="guided meditation, mindfulness, dharma, buddhist meditation, Tara Brach, Jack Kornfield, Sharon Salzberg, Joseph Goldstein, Ajahn Brahm, meditation practice, body scan, breath meditation, compassion meditation, insight meditation">
     <meta name="author" content="Alastair Rushworth">
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#faf8f4">
@@ -872,12 +895,12 @@ def generate_html(meditations: List[Dict], output_file: str):
             </form>
         </header>
 
-        <nav class="filters" aria-label="Filter by source">
-            <div class="filter-pills" id="filter-pills">
-                <button type="button" class="filter-pill active" data-podcast="all" aria-pressed="true">All</button>
-                {podcast_pills}
-            </div>
-        </nav>
+        <p class="intro">A hand-picked, regularly updated collection of free guided
+        meditations from leading insight-meditation and dharma podcasts &mdash; practices
+        for mindfulness, the body scan, loving-kindness (metta) and compassion from teachers
+        including Tara Brach, Jack Kornfield, Sharon Salzberg, Joseph Goldstein and Ajahn
+        Brahm. Every meditation links back to its original source.</p>
+
         <p class="result-count" id="result-count" role="status" aria-live="polite">Showing {total_count} meditations</p>
 
         <main id="results">
@@ -894,7 +917,7 @@ def generate_html(meditations: List[Dict], output_file: str):
         title_search = html_escape(title_plain.lower())
 
         description_html = process_description(m['description'])
-        desc_plain = ' '.join(html_unescape(strip_tags(m['description'])).split())
+        desc_plain = description_plain(m['description'])
         desc_search = html_escape(desc_plain.lower())
 
         feed_website = html_escape(m['feed_website'])
@@ -909,7 +932,7 @@ def generate_html(meditations: List[Dict], output_file: str):
             )
 
         cards.append(f"""
-            <article class="meditation" data-podcast="{feed_name}" data-title="{title_search}" data-description="{desc_search}" data-original-title="{title_attr}">
+            <article class="meditation" data-title="{title_search}" data-description="{desc_search}" data-original-title="{title_attr}">
                 <div class="meditation-content">
                     <div class="meditation-meta">
                         <a href="{feed_website}" class="meditation-source" target="_blank" rel="noopener noreferrer">{feed_name}</a>
