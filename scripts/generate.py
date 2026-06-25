@@ -7,7 +7,7 @@ import json
 import re
 from collections import defaultdict
 from datetime import datetime, timezone
-from typing import List, Dict
+from typing import List, Dict, Tuple
 import feedparser
 import requests
 from pathlib import Path
@@ -60,7 +60,7 @@ def is_guided_meditation(title: str, description: str = '') -> bool:
 
     return False
 
-def parse_feed(feed_url: str, feed_name: str, feed_website: str) -> List[Dict]:
+def parse_feed(feed_url: str, feed_name: str, feed_website: str) -> Tuple[List[Dict], Dict]:
     """
     Parse an RSS feed and extract guided meditation episodes.
     """
@@ -242,6 +242,13 @@ def description_plain(description: str) -> str:
     text = strip_boilerplate(text)
     return ' '.join(text.split())
 
+def truncate_words(text: str, limit: int) -> str:
+    """Trim to at most `limit` words, appending an ellipsis when truncated."""
+    words = text.split()
+    if len(words) > limit:
+        return ' '.join(words[:limit]) + '...'
+    return text
+
 DHARMASEED_LOGO = "https://media.dharmaseed.org/images/DS-rss-logo.jpg"
 
 def extract_feed_meta(feed, feed_name: str, feed_website: str, feed_url: str = '') -> Dict:
@@ -255,17 +262,14 @@ def extract_feed_meta(feed, feed_name: str, feed_website: str, feed_url: str = '
     if not image:
         itunes_img = ff.get('itunes_image')
         if isinstance(itunes_img, dict):
-            image = itunes_img.get('href', '')
+            image = itunes_img.get('href') or itunes_img.get('url') or ''
     # Dharma Seed's per-centre sub-feeds carry no artwork of their own; fall back
     # to the Dharma Seed logo since these collections are hosted there.
     if not image and 'dharmaseed.org' in (feed_url or '').lower():
         image = DHARMASEED_LOGO
 
     description = ff.get('subtitle') or ff.get('summary') or ff.get('description') or ''
-    description = description_plain(description)
-    words = description.split()
-    if len(words) > 55:
-        description = ' '.join(words[:55]) + '...'
+    description = truncate_words(description_plain(description), 55)
 
     return {
         'name': feed_name,
@@ -290,12 +294,7 @@ def process_description(description: str) -> str:
     Clean a description (strip HTML / boilerplate), truncate to 150 words,
     escape HTML, and convert any remaining URLs to links.
     """
-    description = description_plain(description)
-
-    # Truncate to 150 words
-    words = description.split()
-    if len(words) > 150:
-        description = ' '.join(words[:150]) + '...'
+    description = truncate_words(description_plain(description), 150)
 
     # Escape HTML entities
     description = html_escape(description)
@@ -343,7 +342,6 @@ CSS = """
     --accent-strong: #455a3e;
     --accent-tint: #eef1ea;
     --border: #e7e1d8;
-    --highlight: #f6e7c4;
     --shadow: 0 1px 2px rgba(28, 25, 23, 0.04), 0 1px 3px rgba(28, 25, 23, 0.05);
     --shadow-lift: 0 10px 24px -8px rgba(28, 25, 23, 0.16);
     --radius: 14px;
@@ -808,6 +806,21 @@ LOTUS_SVG = (
 )
 
 
+def build_nav(active: str) -> str:
+    """Primary nav shared by the pages; `active` is 'meditations' or 'podcasts'."""
+    links = [('meditations', 'index.html', 'Meditations'),
+             ('podcasts', 'podcasts.html', 'Podcasts')]
+    items = []
+    for key, href, label in links:
+        cls = 'site-nav-link active' if key == active else 'site-nav-link'
+        current = ' aria-current="page"' if key == active else ''
+        items.append(f'<a href="{href}" class="{cls}"{current}>{label}</a>')
+    joined = '\n                '.join(items)
+    return ('<nav class="site-nav" aria-label="Primary">\n'
+            f'                {joined}\n'
+            '            </nav>')
+
+
 def build_head(title: str, description: str, canonical: str, json_ld: str = None) -> str:
     """Shared <head> for the site's pages."""
     og_image = SITE_URL + "og-image.png"
@@ -944,12 +957,7 @@ def generate_html(meditations: List[Dict], output_file: str):
 
     head = build_head(title, meta_description, SITE_URL, json_ld)
 
-    nav_html = (
-        '<nav class="site-nav" aria-label="Primary">\n'
-        '                <a href="index.html" class="site-nav-link active" aria-current="page">Meditations</a>\n'
-        '                <a href="podcasts.html" class="site-nav-link">Podcasts</a>\n'
-        '            </nav>'
-    )
+    nav_html = build_nav('meditations')
 
     body_open = f"""<body>
     <div class="container">
@@ -1081,12 +1089,7 @@ def generate_podcasts_html(feed_metas: List[Dict], output_file: str):
     json_ld = build_podcasts_json_ld(feed_metas)
     head = build_head(title, meta_description, canonical, json_ld)
 
-    nav_html = (
-        '<nav class="site-nav" aria-label="Primary">\n'
-        '                <a href="index.html" class="site-nav-link">Meditations</a>\n'
-        '                <a href="podcasts.html" class="site-nav-link active" aria-current="page">Podcasts</a>\n'
-        '            </nav>'
-    )
+    nav_html = build_nav('podcasts')
 
     cards = []
     for fm in feed_metas:
