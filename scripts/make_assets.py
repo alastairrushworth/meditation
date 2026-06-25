@@ -20,7 +20,8 @@ MUTED = (111, 106, 97, 255)
 SAGE = (91, 117, 83)
 PETAL = (91, 117, 83, 205)  # sage with alpha so overlapping petals deepen
 
-HERE = Path(__file__).parent
+# Assets are served from the repo root; this script lives in scripts/.
+HERE = Path(__file__).parent.parent
 
 # macOS system fonts (used only for the OG image text)
 SERIF_FONT = "/System/Library/Fonts/NewYork.ttf"
@@ -97,7 +98,7 @@ def make_og_image():
            "Tara Brach  ·  Jack Kornfield  ·  Sharon Salzberg  ·  "
            "Joseph Goldstein  ·  Ajahn Brahm",
            font=teacher_font, fill=SAGE, anchor="mm")
-    d.text((W / 2, 565), "alastairrushworth.github.io/meditation",
+    d.text((W / 2, 565), "meditation.alastairrushworth.com",
            font=domain_font, fill=MUTED[:3], anchor="mm")
 
     img.save(HERE / "og-image.png")

@@ -12,7 +12,7 @@ import requests
 from pathlib import Path
 from html import escape as html_escape, unescape as html_unescape
 
-SITE_URL = "https://alastairrushworth.github.io/meditation/"
+SITE_URL = "https://meditation.alastairrushworth.com/"
 
 # Signals that an episode is a guided meditation. These are matched against the
 # episode TITLE only: many dharma talks and interviews mention "guided
@@ -1014,12 +1014,12 @@ def main():
         meditations = parse_feed(feed['url'], feed['name'], feed['website'])
         all_meditations.extend(meditations)
 
-    # Generate outputs
-    here = Path(__file__).parent
-    generate_html(all_meditations, str(here / 'index.html'))
-    generate_sitemap(str(here / 'sitemap.xml'))
+    # Generate outputs at the repo root (this script lives in scripts/).
+    site_root = Path(__file__).parent.parent
+    generate_html(all_meditations, str(site_root / 'index.html'))
+    generate_sitemap(str(site_root / 'sitemap.xml'))
 
-    print(f"\nSuccess! Open {here / 'index.html'} in your browser to view the meditations.")
+    print(f"\nSuccess! Open {site_root / 'index.html'} in your browser to view the meditations.")
 
 if __name__ == '__main__':
     main()
