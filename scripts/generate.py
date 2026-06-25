@@ -12,7 +12,7 @@ import requests
 from pathlib import Path
 from html import escape as html_escape, unescape as html_unescape
 
-SITE_URL = "https://meditation.alastairrushworth.com/"
+SITE_URL = "https://alastairrushworth.com/meditation/"
 
 # Signals that an episode is a guided meditation. These are matched against the
 # episode TITLE only: many dharma talks and interviews mention "guided
