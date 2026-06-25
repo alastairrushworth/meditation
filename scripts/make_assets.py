@@ -98,7 +98,7 @@ def make_og_image():
            "Tara Brach  ·  Jack Kornfield  ·  Sharon Salzberg  ·  "
            "Joseph Goldstein  ·  Ajahn Brahm",
            font=teacher_font, fill=SAGE, anchor="mm")
-    d.text((W / 2, 565), "meditation.alastairrushworth.com",
+    d.text((W / 2, 565), "alastairrushworth.com/meditation",
            font=domain_font, fill=MUTED[:3], anchor="mm")
 
     img.save(HERE / "og-image.png")

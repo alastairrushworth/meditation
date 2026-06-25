@@ -4,7 +4,7 @@ A static website that curates **guided meditations** from a set of dharma and
 insight-meditation podcasts. RSS feeds are parsed weekly, filtered down to
 guided-meditation episodes, and rendered into a single fast, searchable page.
 
-**Live site:** https://meditation.alastairrushworth.com/
+**Live site:** https://alastairrushworth.com/meditation/
 
 Episodes link back to the original podcast pages so the teachers and centres
 get the traffic and attribution.
