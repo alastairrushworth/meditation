@@ -5,6 +5,7 @@ Generate a static webpage listing guided meditations from podcast RSS feeds.
 
 import json
 import re
+from collections import defaultdict
 from datetime import datetime, timezone
 from typing import List, Dict
 import feedparser
@@ -13,6 +14,10 @@ from pathlib import Path
 from html import escape as html_escape, unescape as html_unescape
 
 SITE_URL = "https://alastairrushworth.com/meditation/"
+
+# Show only the most recent meditations from each channel, so the homepage stays
+# a fresh, skimmable snapshot rather than a long back-catalogue.
+MAX_PER_FEED = 2
 
 # Signals that an episode is a guided meditation. These are matched against the
 # episode TITLE only: many dharma talks and interviews mention "guided
@@ -71,8 +76,9 @@ def parse_feed(feed_url: str, feed_name: str, feed_website: str) -> List[Dict]:
         feed = feedparser.parse(response.content)
     except Exception as e:
         print(f"  Error fetching {feed_name}: {e}")
-        return []
+        return [], {'name': feed_name, 'website': feed_website, 'image': '', 'description': ''}
 
+    feed_meta = extract_feed_meta(feed, feed_name, feed_website, feed_url)
     meditations = []
 
     # Limit to first 50 entries to reduce processing time and keep recent content
@@ -126,7 +132,7 @@ def parse_feed(feed_url: str, feed_name: str, feed_website: str) -> List[Dict]:
             })
 
     print(f"Found {len(meditations)} guided meditations from {feed_name}")
-    return meditations
+    return meditations, feed_meta
 
 def format_duration(duration_str: str) -> str:
     """
@@ -235,6 +241,49 @@ def description_plain(description: str) -> str:
     text = re.sub(r'\*{3,}', '', text)
     text = strip_boilerplate(text)
     return ' '.join(text.split())
+
+DHARMASEED_LOGO = "https://media.dharmaseed.org/images/DS-rss-logo.jpg"
+
+def extract_feed_meta(feed, feed_name: str, feed_website: str, feed_url: str = '') -> Dict:
+    """Pull channel-level artwork and a short blurb for the podcasts page."""
+    ff = getattr(feed, 'feed', {}) or {}
+
+    image = ''
+    img = ff.get('image')
+    if isinstance(img, dict):
+        image = img.get('href') or img.get('url') or ''
+    if not image:
+        itunes_img = ff.get('itunes_image')
+        if isinstance(itunes_img, dict):
+            image = itunes_img.get('href', '')
+    # Dharma Seed's per-centre sub-feeds carry no artwork of their own; fall back
+    # to the Dharma Seed logo since these collections are hosted there.
+    if not image and 'dharmaseed.org' in (feed_url or '').lower():
+        image = DHARMASEED_LOGO
+
+    description = ff.get('subtitle') or ff.get('summary') or ff.get('description') or ''
+    description = description_plain(description)
+    words = description.split()
+    if len(words) > 55:
+        description = ' '.join(words[:55]) + '...'
+
+    return {
+        'name': feed_name,
+        'website': feed_website,
+        'image': image,
+        'description': description,
+    }
+
+def limit_per_feed(meditations: List[Dict], limit: int) -> List[Dict]:
+    """Keep only the `limit` most recent meditations from each channel."""
+    by_feed = defaultdict(list)
+    for m in meditations:
+        by_feed[m['feed_name']].append(m)
+    kept = []
+    for items in by_feed.values():
+        items.sort(key=lambda x: x['date'], reverse=True)
+        kept.extend(items[:limit])
+    return kept
 
 def process_description(description: str) -> str:
     """
@@ -358,48 +407,105 @@ h1 {
     margin-bottom: 22px;
 }
 
-.search-box { max-width: 520px; margin: 0 auto; position: relative; }
-
-.search-icon {
-    position: absolute;
-    left: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 18px;
-    height: 18px;
-    color: var(--muted);
-    pointer-events: none;
+/* --- Primary nav ------------------------------------------------------ */
+.site-nav {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
 }
 
-.search-input {
-    width: 100%;
-    padding: 13px 18px 13px 44px;
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    font-size: 1rem;
-    font-family: inherit;
-    color: var(--text);
+.site-nav-link {
+    font-size: 0.86rem;
+    font-weight: 500;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 7px 16px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    transition: color 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+}
+
+.site-nav-link:hover { color: var(--accent-strong); background: var(--bg-soft); }
+
+.site-nav-link.active {
+    color: var(--accent-strong);
+    border-color: var(--border);
     background: var(--surface);
     box-shadow: var(--shadow);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.search-input:focus {
-    outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(91, 117, 83, 0.14);
-}
-
-.search-input::placeholder { color: #a8a299; }
-
+/* --- Closing intro / blurb (rendered at the end of the page) ---------- */
 .intro {
     max-width: 620px;
-    margin: 22px auto 0;
-    padding: 0 24px;
+    margin: 40px auto 0;
+    padding: 30px 24px 0;
+    border-top: 1px solid var(--border);
     text-align: center;
     color: var(--text-soft);
     font-size: 0.95rem;
     line-height: 1.7;
+}
+
+/* --- Podcasts page ---------------------------------------------------- */
+.podcast-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+    padding: 8px 24px 0;
+}
+
+.podcast-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 16px;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.podcast-card:hover {
+    box-shadow: var(--shadow-lift);
+    border-color: #d8cfc0;
+    transform: translateY(-2px);
+}
+
+.podcast-art {
+    width: 72px;
+    height: 72px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    object-fit: cover;
+    background: var(--accent-tint);
+    border: 1px solid var(--border);
+}
+
+.podcast-info { min-width: 0; }
+
+.podcast-name {
+    font-family: var(--font-serif);
+    font-size: 1.06rem;
+    font-weight: 500;
+    line-height: 1.3;
+    margin-bottom: 4px;
+    color: var(--text);
+}
+
+.podcast-card:hover .podcast-name { color: var(--accent-strong); }
+
+.podcast-desc {
+    font-size: 0.85rem;
+    color: var(--text-soft);
+    line-height: 1.55;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .result-count {
@@ -549,12 +655,6 @@ footer a:hover { color: var(--accent-strong); text-decoration: underline; }
 /* --- Utilities -------------------------------------------------------- */
 .hidden { display: none !important; }
 
-.highlight {
-    background: var(--highlight);
-    padding: 1px 3px;
-    border-radius: 3px;
-}
-
 .sr-only {
     position: absolute;
     width: 1px; height: 1px;
@@ -594,73 +694,39 @@ input:focus-visible,
     .meditation-title { font-size: 1.14rem; }
     .meditation-description { font-size: 0.9rem; }
     .pagination { padding: 24px 16px 4px; gap: 8px; }
+    .podcast-grid { padding: 8px 16px 0; }
+    .intro { font-size: 0.9rem; padding-top: 26px; }
 }
 """
 
 
 JS = """
-const searchInput = document.getElementById('search-input');
 const resultCount = document.getElementById('result-count');
-const meditationEls = document.querySelectorAll('.meditation');
+const meditationEls = Array.from(document.querySelectorAll('.meditation'));
 const prevBtn = document.getElementById('prev-btn');
 const nextBtn = document.getElementById('next-btn');
 const paginationNumbers = document.getElementById('pagination-numbers');
 const resultsEl = document.getElementById('results');
 
 let currentPage = 1;
-let filtered = [];
+const totalItems = meditationEls.length;
 
-function escapeRegExp(s) {
-    return s.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&');
-}
-
-function highlightText(text, term) {
-    if (!term) return text;
-    const re = new RegExp('(' + escapeRegExp(term) + ')', 'gi');
-    return text.replace(re, '<span class="highlight">$1</span>');
-}
-
-function applyFilters() {
-    const term = searchInput.value.toLowerCase().trim();
-    filtered = [];
-    meditationEls.forEach(el => {
-        const title = el.getAttribute('data-title');
-        const description = el.getAttribute('data-description');
-        const searchMatch = term === '' || title.includes(term) || description.includes(term);
-        if (searchMatch) {
-            filtered.push({ element: el, originalTitle: el.getAttribute('data-original-title') });
-        }
-    });
-    currentPage = 1;
-    render(term);
-}
-
-function render(term, scroll) {
-    const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+function render(scroll) {
+    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
 
-    meditationEls.forEach(m => m.classList.add('hidden'));
-
-    filtered.forEach((item, index) => {
-        if (index >= startIndex && index < endIndex) {
-            const link = item.element.querySelector('.meditation-link');
-            item.element.classList.remove('hidden');
-            if (term) {
-                link.innerHTML = highlightText(item.originalTitle, term);
-            } else {
-                link.textContent = item.originalTitle;
-            }
-        }
+    meditationEls.forEach((m, index) => {
+        m.classList.toggle('hidden', index < startIndex || index >= endIndex);
     });
 
-    if (filtered.length === 0) {
+    if (totalItems === 0) {
         resultCount.textContent = 'No meditations found';
     } else {
-        const showing = Math.min(filtered.length, endIndex) - startIndex;
+        const showing = Math.min(totalItems, endIndex) - startIndex;
         resultCount.textContent =
             'Showing ' + (startIndex + 1) + '\\u2013' + (startIndex + showing) +
-            ' of ' + filtered.length + ' meditations';
+            ' of ' + totalItems + ' meditations';
     }
 
     renderPagination(totalPages);
@@ -708,14 +774,12 @@ function renderPagination(totalPages) {
 
 function goToPage(page) {
     currentPage = page;
-    render(searchInput.value.toLowerCase().trim(), true);
+    render(true);
 }
-
-searchInput.addEventListener('input', applyFilters);
 
 prevBtn.addEventListener('click', () => { if (currentPage > 1) goToPage(currentPage - 1); });
 nextBtn.addEventListener('click', () => {
-    const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
     if (currentPage < totalPages) goToPage(currentPage + 1);
 });
 
@@ -730,7 +794,95 @@ meditationEls.forEach(el => {
     });
 });
 
-applyFilters();
+render(false);
+"""
+
+
+LOTUS_SVG = (
+    '<svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true" '
+    'focusable="false"><g fill="#5b7553" fill-opacity="0.82">'
+    '<path d="M32 50 C27 42 27 27 32 15 C37 27 37 42 32 50Z" transform="rotate(-75 32 50)"/>'
+    '<path d="M32 50 C27 42 27 27 32 15 C37 27 37 42 32 50Z" transform="rotate(-50 32 50)"/>'
+    '<path d="M32 50 C27 42 27 27 32 15 C37 27 37 42 32 50Z" transform="rotate(-25 32 50)"/>'
+    '<path d="M32 50 C27 42 27 27 32 15 C37 27 37 42 32 50Z" transform="rotate(0 32 50)"/>'
+    '<path d="M32 50 C27 42 27 27 32 15 C37 27 37 42 32 50Z" transform="rotate(25 32 50)"/>'
+    '<path d="M32 50 C27 42 27 27 32 15 C37 27 37 42 32 50Z" transform="rotate(50 32 50)"/>'
+    '<path d="M32 50 C27 42 27 27 32 15 C37 27 37 42 32 50Z" transform="rotate(75 32 50)"/>'
+    '</g></svg>'
+)
+
+
+def build_head(title: str, description: str, canonical: str, json_ld: str = None) -> str:
+    """Shared <head> for the site's pages."""
+    og_image = SITE_URL + "og-image.png"
+
+    gtag = (
+        '<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y8XLWX2T51"></script>\n'
+        '    <script>\n'
+        '      window.dataLayer = window.dataLayer || [];\n'
+        '      function gtag(){dataLayer.push(arguments);}\n'
+        "      gtag('js', new Date());\n"
+        "      gtag('config', 'G-Y8XLWX2T51');\n"
+        '    </script>'
+    )
+
+    ld_block = ''
+    if json_ld:
+        ld_block = (
+            '    <!-- Structured Data / JSON-LD -->\n'
+            '    <script type="application/ld+json">\n'
+            f'{json_ld}\n'
+            '    </script>\n\n'
+        )
+
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Primary Meta Tags -->
+    <title>{html_escape(title)}</title>
+    <meta name="title" content="{html_escape(title)}">
+    <meta name="description" content="{html_escape(description)}">
+    <meta name="author" content="Alastair Rushworth">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#faf8f4">
+    <link rel="canonical" href="{canonical}">
+
+    <!-- Icons -->
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="manifest" href="site.webmanifest">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{canonical}">
+    <meta property="og:title" content="{html_escape(title)}">
+    <meta property="og:description" content="{html_escape(description)}">
+    <meta property="og:site_name" content="Guided Meditations">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:image" content="{og_image}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Guided Meditations — a curated collection from dharma podcasts">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{canonical}">
+    <meta name="twitter:title" content="{html_escape(title)}">
+    <meta name="twitter:description" content="{html_escape(description)}">
+    <meta name="twitter:image" content="{og_image}">
+
+{ld_block}    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap">
+
+    <style>{CSS}</style>
+    {gtag}
+</head>
 """
 
 
@@ -793,113 +945,26 @@ def generate_html(meditations: List[Dict], output_file: str):
         "Jack Kornfield & Sharon Salzberg — mindfulness, body scan and metta practice."
     )
     title = "Guided Meditations – Curated Collection from Dharma Podcasts"
-    og_image = SITE_URL + "og-image.png"
 
-    gtag = (
-        '<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y8XLWX2T51"></script>\n'
-        '    <script>\n'
-        '      window.dataLayer = window.dataLayer || [];\n'
-        '      function gtag(){dataLayer.push(arguments);}\n'
-        "      gtag('js', new Date());\n"
-        "      gtag('config', 'G-Y8XLWX2T51');\n"
-        '    </script>'
-    )
+    head = build_head(title, meta_description, SITE_URL, json_ld)
 
-    head = f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Primary Meta Tags -->
-    <title>{html_escape(title)}</title>
-    <meta name="title" content="{html_escape(title)}">
-    <meta name="description" content="{html_escape(meta_description)}">
-    <meta name="author" content="Alastair Rushworth">
-    <meta name="robots" content="index, follow">
-    <meta name="theme-color" content="#faf8f4">
-    <link rel="canonical" href="{SITE_URL}">
-
-    <!-- Icons -->
-    <link rel="icon" href="favicon.svg" type="image/svg+xml">
-    <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    <link rel="manifest" href="site.webmanifest">
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="{SITE_URL}">
-    <meta property="og:title" content="{html_escape(title)}">
-    <meta property="og:description" content="{html_escape(meta_description)}">
-    <meta property="og:site_name" content="Guided Meditations">
-    <meta property="og:locale" content="en_US">
-    <meta property="og:image" content="{og_image}">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="Guided Meditations — a curated collection from dharma podcasts">
-
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="{SITE_URL}">
-    <meta name="twitter:title" content="{html_escape(title)}">
-    <meta name="twitter:description" content="{html_escape(meta_description)}">
-    <meta name="twitter:image" content="{og_image}">
-
-    <!-- Structured Data / JSON-LD -->
-    <script type="application/ld+json">
-{json_ld}
-    </script>
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap">
-
-    <style>{CSS}</style>
-    {gtag}
-</head>
-"""
-
-    lotus_svg = (
-        '<svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true" '
-        'focusable="false"><g fill="#5b7553" fill-opacity="0.82">'
-        '<path d="M32 50 C27 42 27 27 32 15 C37 27 37 42 32 50Z" transform="rotate(-75 32 50)"/>'
-        '<path d="M32 50 C27 42 27 27 32 15 C37 27 37 42 32 50Z" transform="rotate(-50 32 50)"/>'
-        '<path d="M32 50 C27 42 27 27 32 15 C37 27 37 42 32 50Z" transform="rotate(-25 32 50)"/>'
-        '<path d="M32 50 C27 42 27 27 32 15 C37 27 37 42 32 50Z" transform="rotate(0 32 50)"/>'
-        '<path d="M32 50 C27 42 27 27 32 15 C37 27 37 42 32 50Z" transform="rotate(25 32 50)"/>'
-        '<path d="M32 50 C27 42 27 27 32 15 C37 27 37 42 32 50Z" transform="rotate(50 32 50)"/>'
-        '<path d="M32 50 C27 42 27 27 32 15 C37 27 37 42 32 50Z" transform="rotate(75 32 50)"/>'
-        '</g></svg>'
-    )
-    search_icon = (
-        '<svg class="search-icon" viewBox="0 0 24 24" fill="none" '
-        'stroke="currentColor" stroke-width="2" stroke-linecap="round" '
-        'aria-hidden="true" focusable="false">'
-        '<circle cx="11" cy="11" r="7"></circle>'
-        '<line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>'
+    nav_html = (
+        '<nav class="site-nav" aria-label="Primary">\n'
+        '                <a href="index.html" class="site-nav-link active" aria-current="page">Meditations</a>\n'
+        '                <a href="podcasts.html" class="site-nav-link">Podcasts</a>\n'
+        '            </nav>'
     )
 
     body_open = f"""<body>
     <div class="container">
         <header>
             <div class="brand">
-                {lotus_svg}
+                {LOTUS_SVG}
                 <h1>Guided Meditations</h1>
             </div>
             <p class="subtitle">A curated collection from dharma podcasts</p>
-            <form class="search-box" role="search" onsubmit="return false;">
-                <label for="search-input" class="sr-only">Search meditations</label>
-                {search_icon}
-                <input type="search" id="search-input" class="search-input" placeholder="Search meditations…" autocomplete="off">
-            </form>
+            {nav_html}
         </header>
-
-        <p class="intro">A hand-picked, regularly updated collection of free guided
-        meditations from leading insight-meditation and dharma podcasts &mdash; practices
-        for mindfulness, the body scan, loving-kindness (metta) and compassion from teachers
-        including Tara Brach, Jack Kornfield, Sharon Salzberg, Joseph Goldstein and Ajahn
-        Brahm. Every meditation links back to its original source.</p>
 
         <p class="result-count" id="result-count" role="status" aria-live="polite">Showing {total_count} meditations</p>
 
@@ -914,11 +979,8 @@ def generate_html(meditations: List[Dict], output_file: str):
 
         title_plain = html_unescape(strip_tags(m['title'])).strip()
         title_attr = html_escape(title_plain)
-        title_search = html_escape(title_plain.lower())
 
         description_html = process_description(m['description'])
-        desc_plain = description_plain(m['description'])
-        desc_search = html_escape(desc_plain.lower())
 
         feed_website = html_escape(m['feed_website'])
         episode_url = html_escape(m['episode_url'])
@@ -932,7 +994,7 @@ def generate_html(meditations: List[Dict], output_file: str):
             )
 
         cards.append(f"""
-            <article class="meditation" data-title="{title_search}" data-description="{desc_search}" data-original-title="{title_attr}">
+            <article class="meditation">
                 <div class="meditation-content">
                     <div class="meditation-meta">
                         <a href="{feed_website}" class="meditation-source" target="_blank" rel="noopener noreferrer">{feed_name}</a>
@@ -954,10 +1016,17 @@ def generate_html(meditations: List[Dict], output_file: str):
             <button type="button" class="pagination-btn" id="next-btn">Next &raquo;</button>
         </nav>
 
+        <p class="intro">A hand-picked, regularly updated collection of free guided
+        meditations from leading insight-meditation and dharma podcasts &mdash; practices
+        for mindfulness, the body scan, loving-kindness (metta) and compassion from teachers
+        including Tara Brach, Jack Kornfield, Sharon Salzberg, Joseph Goldstein and Ajahn
+        Brahm. Every meditation links back to its original source.</p>
+
         <footer>
             <p>Last updated: {update_time}</p>
             <p>Generated from podcast RSS feeds &middot; not affiliated with the teachers or centres listed</p>
             <p>
+                <a href="podcasts.html">Browse podcasts</a> &middot;
                 <a href="https://github.com/alastairrushworth/meditation" target="_blank" rel="noopener noreferrer">View on GitHub</a> &middot;
                 Made by <a href="https://alastairrushworth.com" target="_blank" rel="noopener noreferrer">alastairrushworth.com</a>
             </p>
@@ -980,6 +1049,111 @@ const ITEMS_PER_PAGE = 25;
     print(f"Generated {output_file} with {total_count} meditations")
 
 
+def build_podcasts_json_ld(feed_metas: List[Dict]) -> str:
+    """schema.org ItemList of the source podcasts."""
+    def list_item(position: int, fm: Dict) -> Dict:
+        series = {"@type": "PodcastSeries", "name": fm['name'], "url": fm['website']}
+        if fm.get('image'):
+            series["image"] = fm['image']
+        if fm.get('description'):
+            series["description"] = fm['description']
+        return {"@type": "ListItem", "position": position, "item": series}
+
+    page = {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "url": SITE_URL + "podcasts.html",
+        "name": "Podcasts – Guided Meditation Sources",
+        "isPartOf": {"@id": SITE_URL + "#website"},
+        "inLanguage": "en",
+        "mainEntity": {
+            "@type": "ItemList",
+            "numberOfItems": len(feed_metas),
+            "itemListElement": [list_item(i + 1, fm) for i, fm in enumerate(feed_metas)],
+        },
+    }
+    return json.dumps(page, ensure_ascii=False, indent=2)
+
+
+def generate_podcasts_html(feed_metas: List[Dict], output_file: str):
+    """Generate a page listing the source podcasts with artwork and links."""
+    canonical = SITE_URL + "podcasts.html"
+    title = "Podcasts – Guided Meditation Sources"
+    meta_description = (
+        "The dharma and insight-meditation podcasts behind this collection of guided "
+        "meditations — Tara Brach, Jack Kornfield, Sharon Salzberg, Joseph Goldstein, "
+        "Ajahn Brahm and more."
+    )
+    json_ld = build_podcasts_json_ld(feed_metas)
+    head = build_head(title, meta_description, canonical, json_ld)
+
+    nav_html = (
+        '<nav class="site-nav" aria-label="Primary">\n'
+        '                <a href="index.html" class="site-nav-link">Meditations</a>\n'
+        '                <a href="podcasts.html" class="site-nav-link active" aria-current="page">Podcasts</a>\n'
+        '            </nav>'
+    )
+
+    cards = []
+    for fm in feed_metas:
+        name = html_escape(fm['name'])
+        website = html_escape(fm['website'])
+        if fm.get('image'):
+            art = (
+                f'<img class="podcast-art" src="{html_escape(fm["image"])}" '
+                f'alt="{name} artwork" loading="lazy" width="72" height="72">'
+            )
+        else:
+            art = '<div class="podcast-art" aria-hidden="true"></div>'
+        desc_html = ''
+        if fm.get('description'):
+            desc_html = f'<p class="podcast-desc">{html_escape(fm["description"])}</p>'
+        cards.append(f"""
+            <a class="podcast-card" href="{website}" target="_blank" rel="noopener noreferrer">
+                {art}
+                <div class="podcast-info">
+                    <div class="podcast-name">{name}</div>
+                    {desc_html}
+                </div>
+            </a>
+""")
+
+    body = f"""<body>
+    <div class="container">
+        <header>
+            <div class="brand">
+                {LOTUS_SVG}
+                <h1>Guided Meditations</h1>
+            </div>
+            <p class="subtitle">The podcasts behind the collection</p>
+            {nav_html}
+        </header>
+
+        <main class="podcast-grid">
+{''.join(cards)}        </main>
+
+        <p class="intro">Every meditation on this site links back to its original
+        source. These are the insight-meditation and dharma podcasts the collection draws
+        from &mdash; visit them to support the teachers and explore their full archives.</p>
+
+        <footer>
+            <p>Generated from podcast RSS feeds &middot; not affiliated with the teachers or centres listed</p>
+            <p>
+                <a href="index.html">Browse meditations</a> &middot;
+                <a href="https://github.com/alastairrushworth/meditation" target="_blank" rel="noopener noreferrer">View on GitHub</a> &middot;
+                Made by <a href="https://alastairrushworth.com" target="_blank" rel="noopener noreferrer">alastairrushworth.com</a>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
+"""
+
+    with open(output_file, 'w', encoding='utf-8') as f:
+        f.write(head + body)
+    print(f"Generated {output_file} with {len(feed_metas)} podcasts")
+
+
 def generate_sitemap(output_file: str):
     """Write a minimal sitemap for the single-page site."""
     lastmod = datetime.now(timezone.utc).strftime('%Y-%m-%d')
@@ -990,6 +1164,12 @@ def generate_sitemap(output_file: str):
     <lastmod>{lastmod}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>{SITE_URL}podcasts.html</loc>
+    <lastmod>{lastmod}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
 </urlset>
 """
@@ -1008,15 +1188,21 @@ def main():
         config = json.load(f)
 
     all_meditations = []
+    feed_metas = []
 
     # Process each feed
     for feed in config['feeds']:
-        meditations = parse_feed(feed['url'], feed['name'], feed['website'])
+        meditations, feed_meta = parse_feed(feed['url'], feed['name'], feed['website'])
         all_meditations.extend(meditations)
+        feed_metas.append(feed_meta)
+
+    # Keep only the two most recent meditations from each channel.
+    all_meditations = limit_per_feed(all_meditations, MAX_PER_FEED)
 
     # Generate outputs at the repo root (this script lives in scripts/).
     site_root = Path(__file__).parent.parent
     generate_html(all_meditations, str(site_root / 'index.html'))
+    generate_podcasts_html(feed_metas, str(site_root / 'podcasts.html'))
     generate_sitemap(str(site_root / 'sitemap.xml'))
 
     print(f"\nSuccess! Open {site_root / 'index.html'} in your browser to view the meditations.")
