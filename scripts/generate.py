@@ -352,15 +352,18 @@ CSS = """
         'Helvetica Neue', Arial, sans-serif;
 }
 
-html { scroll-behavior: smooth; }
+/* Reserve a symmetric scrollbar gutter so the centred header/content don't
+   shift sideways when the vertical scrollbar appears. */
+html {
+    scroll-behavior: smooth;
+    scrollbar-gutter: stable both-edges;
+}
 
 body {
     font-family: var(--font-sans);
     line-height: 1.65;
     color: var(--text);
     background-color: var(--bg);
-    background-image:
-        radial-gradient(1200px 600px at 50% -10%, #ffffff 0%, rgba(255, 255, 255, 0) 60%);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
@@ -370,15 +373,25 @@ body {
 
 /* --- Header ----------------------------------------------------------- */
 header {
-    padding: 44px 24px 26px;
-    text-align: center;
-    background: rgba(250, 248, 244, 0.82);
-    backdrop-filter: saturate(140%) blur(10px);
-    -webkit-backdrop-filter: saturate(140%) blur(10px);
     position: sticky;
     top: 0;
     z-index: 100;
-    border-bottom: 1px solid var(--border);
+    padding: 44px 24px 22px;
+    text-align: center;
+    background: var(--bg);
+}
+
+/* Cards dissolve into a soft fade as they scroll up under the header,
+   rather than meeting a hard rule and a translucent blurred seam. */
+header::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    height: 32px;
+    background: linear-gradient(to bottom, var(--bg), rgba(250, 248, 244, 0));
+    pointer-events: none;
 }
 
 .brand {
@@ -506,13 +519,6 @@ h1 {
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
-}
-
-.result-count {
-    text-align: center;
-    margin: 18px 0 4px;
-    color: var(--muted);
-    font-size: 0.875rem;
 }
 
 /* --- Meditation cards ------------------------------------------------- */
@@ -701,7 +707,6 @@ input:focus-visible,
 
 
 JS = """
-const resultCount = document.getElementById('result-count');
 const meditationEls = Array.from(document.querySelectorAll('.meditation'));
 const prevBtn = document.getElementById('prev-btn');
 const nextBtn = document.getElementById('next-btn');
@@ -719,15 +724,6 @@ function render(scroll) {
     meditationEls.forEach((m, index) => {
         m.classList.toggle('hidden', index < startIndex || index >= endIndex);
     });
-
-    if (totalItems === 0) {
-        resultCount.textContent = 'No meditations found';
-    } else {
-        const showing = Math.min(totalItems, endIndex) - startIndex;
-        resultCount.textContent =
-            'Showing ' + (startIndex + 1) + '\\u2013' + (startIndex + showing) +
-            ' of ' + totalItems + ' meditations';
-    }
 
     renderPagination(totalPages);
 
@@ -965,8 +961,6 @@ def generate_html(meditations: List[Dict], output_file: str):
             <p class="subtitle">A curated collection from dharma podcasts</p>
             {nav_html}
         </header>
-
-        <p class="result-count" id="result-count" role="status" aria-live="polite">Showing {total_count} meditations</p>
 
         <main id="results">
 """
