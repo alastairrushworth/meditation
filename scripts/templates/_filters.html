@@ -1,0 +1,43 @@
+{% macro filters(sources, lengths, practices, index_url, total) -%}
+<form class="filters" role="search" data-index="{{ index_url }}" hidden onsubmit="return false">
+    <div class="filter-row">
+        <div class="search-field">
+            <svg class="search-icon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M11.7 10.3a5.5 5.5 0 1 0-1.4 1.4l3 3a1 1 0 0 0 1.4-1.4zM3 6.5a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/></svg>
+            <label class="sr-only" for="filter-search">Search meditations by title, teacher or centre</label>
+            <input type="search" id="filter-search" placeholder="Search {{ total | thousands }} meditations&hellip;" autocomplete="off">
+            <button type="button" class="search-clear" aria-label="Clear search" hidden>
+                <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M4.3 3.3 8 7l3.7-3.7 1 1L9 8l3.7 3.7-1 1L8 9l-3.7 3.7-1-1L7 8 3.3 4.3z"/></svg>
+            </button>
+        </div>
+        <button type="button" class="filter-toggle" aria-expanded="false" aria-controls="filter-fields">
+            <svg class="chevron" viewBox="0 0 12 12" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M4.5 2.5 8 6l-3.5 3.5"/></svg>
+            Filters
+        </button>
+        <button type="button" class="reset-filters" hidden>Clear</button>
+    </div>
+    <div class="filter-fields" id="filter-fields" hidden>
+        <label class="sr-only" for="filter-length">Filter by length</label>
+        <select class="filter-select" id="filter-length">
+            <option value="">Any length</option>
+            {%- for b in lengths %}
+            <option value="{{ b.slug }}">{{ b.short }}</option>
+            {%- endfor %}
+        </select>
+        <label class="sr-only" for="filter-practice">Filter by practice</label>
+        <select class="filter-select" id="filter-practice">
+            <option value="">Any practice</option>
+            {%- for p in practices %}
+            <option value="{{ p.slug }}">{{ p.short }}</option>
+            {%- endfor %}
+        </select>
+        <label class="sr-only" for="filter-source">Filter by centre</label>
+        <select class="filter-select" id="filter-source">
+            <option value="">Any centre</option>
+            {%- for s in sources %}
+            <option value="{{ s.slug }}">{{ s.name }}</option>
+            {%- endfor %}
+        </select>
+    </div>
+</form>
+<p class="filter-status" id="filter-status" role="status" aria-live="polite"></p>
+{%- endmacro %}

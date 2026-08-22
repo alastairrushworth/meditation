@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="prose">
+    <h1>About this collection</h1>
+    <p>{{ about_1 }}</p>
+    <p>{{ about_2 }}</p>
+    <p>{{ about_3 }}</p>
+
+    <h2>Licensing</h2>
+    <p>{{ about_licence_1 }}</p>
+    <p>{{ about_licence_2 }}</p>
+
+    <h2>The {{ podcasts | length }} centres this draws from</h2>
+    <p>Each publishes its own recordings. Every meditation links back to the original, and the
+       audio streams from the publisher&rsquo;s servers rather than being copied.</p>
+
+    <div class="podcast-grid">
+        {%- for p in podcasts %}
+        <a class="podcast-card" href="{{ p.website }}" target="_blank" rel="noopener noreferrer">
+            <span class="podcast-art">
+                {%- if p.image %}<img src="{{ p.image }}" alt="" loading="lazy" decoding="async" width="44" height="44" referrerpolicy="no-referrer">{% endif %}
+            </span>
+            <span class="podcast-info">
+                <span class="podcast-name">{{ p.name }}</span>
+                <span class="podcast-count">{{ p.count }} guided meditation{{ '' if p.count == 1 else 's' }}{% if p.licence %} &middot; <span class="nowrap">{{ p.licence.name }}</span>{% endif %}</span>
+            </span>
+        </a>
+        {%- endfor %}
+    </div>
+</div>
+{% endblock %}

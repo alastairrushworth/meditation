@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% from "_card.html" import card as card_macro %}
+{% block content %}
+<div class="page-intro">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="{{ base }}">Meditations</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <a href="{{ m.feed_website }}" target="_blank" rel="noopener noreferrer">{{ m.feed_name }}</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <span>{{ m.title }}</span>
+    </nav>
+    <h1>{{ m.title }}</h1>
+    <div class="listen-meta">
+        {%- if m.show_teacher %}<span>{{ m.teacher }}</span><span class="meta-dot" aria-hidden="true"></span>{% endif %}
+        <span>{{ m.feed_name }}</span>
+        {%- if m.date_display %}<span class="meta-dot" aria-hidden="true"></span><time datetime="{{ m.date }}">{{ m.date_display }}</time>{% endif %}
+        {%- if m.duration_display %}<span class="meta-dot" aria-hidden="true"></span><span>{{ m.duration_display }}</span>{% endif %}
+    </div>
+</div>
+
+<audio class="listen-audio" controls preload="none" src="{{ m.audio_url }}">
+    Your browser cannot play audio. <a href="{{ m.audio_url }}">Download the recording</a>.
+</audio>
+
+<div class="listen-body">
+    {%- if m.description_html %}
+    <p>{{ m.description_html }}</p>
+    {%- endif %}
+    <div class="callout">
+        <p>This episode is published without a page of its own, so it is listed here.
+           The recording is streamed directly from {{ m.feed_name }} &mdash; visit
+           <a href="{{ m.feed_website }}" target="_blank" rel="noopener noreferrer">{{ m.source_host }}</a>
+           for the full archive and to support the teacher.</p>
+    </div>
+    {%- if m.practice_labels %}
+    <div class="practice-tags">
+        {%- for p in m.practice_labels %}
+        <a class="practice-tag" href="{{ base }}?practice={{ p.slug }}">{{ p.short }}</a>
+        {%- endfor %}
+    </div>
+    {%- endif %}
+</div>
+
+{%- if more %}
+<section style="margin-top:36px">
+    <h2 class="page-intro" style="font-family:var(--font-serif);font-size:1.3rem;font-weight:500;margin-bottom:14px">More from {{ m.feed_name }}</h2>
+    <ul class="meditation-list" id="meditation-list">
+        {%- for other in more %}
+        {{ card_macro(other, base, 'h3') }}
+        {%- endfor %}
+    </ul>
+</section>
+{%- endif %}
+{% endblock %}

@@ -1,15 +1,24 @@
 {
   "name": "Guided Meditations",
   "short_name": "Meditations",
-  "description": "A curated collection of guided meditations from dharma podcasts.",
-  "start_url": "./",
-  "scope": "./",
+  "description": "A curated collection of free guided meditations from dharma and insight-meditation podcasts.",
+  "start_url": "/meditation/",
+  "scope": "/meditation/",
+  "id": "/meditation/",
   "display": "standalone",
   "background_color": "#faf8f4",
   "theme_color": "#faf8f4",
+  "categories": ["health", "lifestyle", "education"],
+  "lang": "en-GB",
   "icons": [
-    { "src": "favicon-32.png", "sizes": "32x32", "type": "image/png" },
-    { "src": "apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+    { "src": "/meditation/favicon-32.png", "sizes": "32x32", "type": "image/png" },
+    { "src": "/meditation/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/meditation/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/meditation/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Full archive", "url": "/meditation/all/" },
+    { "name": "Browse by length", "url": "/meditation/lengths/" },
+    { "name": "Browse by teacher", "url": "/meditation/teachers/" }
   ]
 }
