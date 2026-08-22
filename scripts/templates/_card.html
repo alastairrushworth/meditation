@@ -1,0 +1,53 @@
+{% macro card(m, base, heading='h2') -%}
+<li class="meditation"
+    data-source="{{ m.feed_slug }}"
+    data-length="{{ m.length_bucket or '' }}"
+    data-practices="{{ m.practices | join(' ') }}"
+    data-search="{{ m.search_text }}">
+    <div class="meditation-content">
+        <div class="meditation-meta">
+            <a href="{{ m.feed_website }}" class="meditation-source" target="_blank" rel="noopener noreferrer">{{ m.feed_name }}</a>
+            {%- if m.show_teacher %}
+            <span class="meta-dot" aria-hidden="true"></span>
+            <span class="meditation-teacher">{{ m.teacher }}</span>
+            {%- endif %}
+            {%- if m.date_display %}
+            <span class="meta-dot" aria-hidden="true"></span>
+            <time datetime="{{ m.date }}">{{ m.date_display }}</time>
+            {%- endif %}
+            {%- if m.duration_display %}
+            <span class="meta-dot" aria-hidden="true"></span>
+            <span>{{ m.duration_display }}</span>
+            {%- endif %}
+        </div>
+        <{{ heading }} class="meditation-title"><a class="meditation-link" href="{{ m.link }}"{% if m.external %} target="_blank" rel="noopener noreferrer"{% endif %}>{{ m.title }}</a></{{ heading }}>
+        {%- if m.description_html %}
+        <div class="meditation-description">{{ m.description_html }}</div>
+        {%- endif %}
+        {%- if m.practice_labels %}
+        <div class="practice-tags">
+            {%- for p in m.practice_labels %}
+            <a class="practice-tag" href="{{ base }}?practice={{ p.slug }}">{{ p.short }}</a>
+            {%- endfor %}
+        </div>
+        {%- endif %}
+        {%- if m.audio_url %}
+        <div class="meditation-actions">
+            <button type="button" class="play-btn" data-audio="{{ m.audio_url }}" data-title="{{ m.title }}" data-sub="{{ m.player_sub }}" aria-pressed="false">
+                <svg class="icon-play" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M4 2.5v11l9-5.5z"/></svg>
+                <svg class="icon-pause" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M4 2.5h3v11H4zm5 0h3v11H9z"/></svg>
+                <span class="play-label">Play</span>
+            </button>
+            {%- if m.external %}
+            <a class="source-link" href="{{ m.link }}" target="_blank" rel="noopener noreferrer">Open on {{ m.source_host }}</a>
+            {%- endif %}
+        </div>
+        {%- endif %}
+        {%- if m.licence %}
+        <p class="licence-note">Shared under
+            <a href="{{ m.licence.url }}" rel="license nofollow noopener" target="_blank">{{ m.licence.name }}</a>
+        </p>
+        {%- endif %}
+    </div>
+</li>
+{%- endmacro %}

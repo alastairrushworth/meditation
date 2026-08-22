@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>{{ page_title }}</title>
+<meta name="description" content="{{ page_description }}">
+<meta name="author" content="{{ author_name }}">
+<link rel="canonical" href="{{ canonical }}">
+{% if prev_url %}<link rel="prev" href="{{ prev_url }}">{% endif %}
+{% if next_url %}<link rel="next" href="{{ next_url }}">{% endif %}
+{% if noindex %}<meta name="robots" content="noindex, follow">{% endif %}
+
+<meta name="theme-color" content="#faf8f4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171614" media="(prefers-color-scheme: dark)">
+
+<link rel="icon" href="{{ base }}favicon.svg" type="image/svg+xml">
+<link rel="icon" href="{{ base }}favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="{{ base }}apple-touch-icon.png">
+<link rel="manifest" href="{{ base }}site.webmanifest">
+<link rel="alternate" type="application/rss+xml" title="{{ site_name }} — new guided meditations" href="{{ site_url }}feed.xml">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ canonical }}">
+<meta property="og:title" content="{{ page_title }}">
+<meta property="og:description" content="{{ page_description }}">
+<meta property="og:site_name" content="{{ site_name }}">
+<meta property="og:locale" content="{{ locale }}">
+<meta property="og:image" content="{{ site_url }}og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{{ site_name }} — a curated collection from dharma podcasts">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ page_title }}">
+<meta name="twitter:description" content="{{ page_description }}">
+<meta name="twitter:image" content="{{ site_url }}og-image.png">
+{%- if json_ld %}
+
+<script type="application/ld+json">
+{{ json_ld }}
+</script>
+{%- endif %}
+
+<script>
+/* Applied before first paint so a dark-theme reader never sees a cream flash. */
+(function(){try{var t=localStorage.getItem('gm-theme');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}}());
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap">
+<link rel="stylesheet" href="{{ base }}assets/{{ css_file }}">
+{%- if analytics %}
+<script defer data-domain="{{ analytics.domain }}" src="{{ analytics.src }}"></script>
+{%- endif %}
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="container">
+<header class="site-header">
+    <a class="brand" href="{{ base }}">
+        {{ lotus }}
+        {% if is_home %}<h1>{{ site_name }}</h1>{% else %}<span class="wordmark">{{ site_name }}</span>{% endif %}
+    </a>
+    <p class="subtitle">{{ subtitle }}</p>
+    <nav class="site-nav" aria-label="Primary">
+        {%- for item in nav %}
+        <a href="{{ item.href }}" class="site-nav-link{% if item.active %} active{% endif %}"{% if item.active %} aria-current="page"{% endif %}>{{ item.label }}</a>
+        {%- endfor %}
+        <button type="button" class="theme-toggle" aria-label="Switch theme">
+            <svg class="icon-light" viewBox="0 0 20 20" aria-hidden="true"><path fill="currentColor" d="M10 3.5a1 1 0 0 1 1 1V5a1 1 0 1 1-2 0v-.5a1 1 0 0 1 1-1Zm0 10a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Zm0-1.6a1.9 1.9 0 1 0 0-3.8 1.9 1.9 0 0 0 0 3.8ZM10 15a1 1 0 0 1 1 1v.5a1 1 0 1 1-2 0V16a1 1 0 0 1 1-1Zm6.5-5a1 1 0 0 1-1 1H15a1 1 0 1 1 0-2h.5a1 1 0 0 1 1 1Zm-11.5 0a1 1 0 0 1-1 1h-.5a1 1 0 1 1 0-2H4a1 1 0 0 1 1 1Zm9.2-4.2a1 1 0 0 1 0 1.4l-.35.36a1 1 0 1 1-1.42-1.42l.36-.35a1 1 0 0 1 1.41 0ZM7.07 12.93a1 1 0 0 1 0 1.41l-.36.36a1 1 0 0 1-1.41-1.42l.35-.35a1 1 0 0 1 1.42 0Zm7.63 1.77a1 1 0 0 1-1.41 0l-.36-.36a1 1 0 0 1 1.42-1.41l.35.35a1 1 0 0 1 0 1.42ZM7.07 7.07a1 1 0 0 1-1.42 0l-.35-.36a1 1 0 0 1 1.41-1.41l.36.35a1 1 0 0 1 0 1.42Z"/></svg>
+            <svg class="icon-dark" viewBox="0 0 20 20" aria-hidden="true"><path fill="currentColor" d="M16.3 12.6A6.8 6.8 0 0 1 7.4 3.7a6.8 6.8 0 1 0 8.9 8.9Z"/></svg>
+        </button>
+    </nav>
+</header>
+
+<main id="main">
+{% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+    {%- if footer_line %}
+    <p>{{ footer_line }}</p>
+    {%- endif %}
+    <p>Built from podcast RSS feeds &middot; not affiliated with the teachers or centres listed</p>
+    <p>
+        <a href="{{ base }}feed.xml">RSS</a> &middot;
+        <a href="{{ repo_url }}" rel="noopener noreferrer" target="_blank">Source on GitHub</a> &middot;
+        Made by <a href="{{ author_url }}" rel="noopener noreferrer" target="_blank">alastairrushworth.com</a>
+    </p>
+</footer>
+</div>
+
+{%- if has_audio %}
+<div class="player-bar" role="region" aria-label="Audio player" aria-hidden="true" hidden>
+    <button type="button" class="player-toggle" aria-label="Play">
+        <svg class="icon-play" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M4 2.5v11l9-5.5z"/></svg>
+        <svg class="icon-pause" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M4 2.5h3v11H4zm5 0h3v11H9z"/></svg>
+    </button>
+    <div class="player-body">
+        <div class="player-title"></div>
+        <div class="player-sub"></div>
+        <input class="player-scrub" type="range" min="0" max="100" value="0" step="0.1" aria-label="Seek">
+    </div>
+    <div class="player-time">0:00</div>
+    <button type="button" class="player-close" aria-label="Close player">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M4.3 3.3 8 7l3.7-3.7 1 1L9 8l3.7 3.7-1 1L8 9l-3.7 3.7-1-1L7 8 3.3 4.3z"/></svg>
+    </button>
+</div>
+{%- endif %}
+
+<script src="{{ base }}assets/{{ js_file }}" defer></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% from "_card.html" import card %}
+{% from "_filters.html" import filters %}
+{% from "_pagination.html" import pagination %}
+{% block content %}
+{{ filters(sources, lengths, practices, base ~ 'search-index.json', total_count) }}
+
+<ul class="meditation-list" id="meditation-list">
+{%- for m in meditations %}
+{{ card(m, base) }}
+{%- endfor %}
+</ul>
+
+<p class="empty-state" id="empty-state" hidden>Nothing matches those filters. Try clearing one.</p>
+
+{{ pagination(page) }}
+{% endblock %}

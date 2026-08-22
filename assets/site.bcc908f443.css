@@ -1,0 +1,879 @@
+/* Guided Meditations — sage & stone.
+   Every colour is a token defined on :root, redefined for dark in two places:
+   a prefers-color-scheme block (guarded so an explicit light choice wins) and
+   a [data-theme="dark"] block (so the toggle wins over the OS). Nothing below
+   the token blocks names a literal colour. */
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --bg: #faf8f4;
+    --bg-soft: #f3efe8;
+    --surface: #fffefb;
+    --surface-2: #f7f4ee;
+    --text: #1c1917;
+    --text-soft: #57534e;
+    --muted: #6f6a61;
+    --accent: #5b7553;
+    --accent-strong: #3f5239;
+    --accent-tint: #eef1ea;
+    --accent-contrast: #ffffff;
+    --border: #e7e1d8;
+    --border-strong: #d3c9b8;
+    --dot: #cabfae;
+    --shadow: 0 1px 2px rgba(28, 25, 23, 0.04), 0 1px 3px rgba(28, 25, 23, 0.05);
+    --shadow-lift: 0 10px 24px -8px rgba(28, 25, 23, 0.16);
+    --radius: 14px;
+    --radius-sm: 9px;
+    --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto,
+        'Helvetica Neue', Arial, sans-serif;
+    --header-h: 132px;
+    color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --bg: #171614;
+        --bg-soft: #1f1e1a;
+        --surface: #211f1c;
+        --surface-2: #282520;
+        --text: #f2eee7;
+        --text-soft: #cdc5b8;
+        --muted: #a29a8d;
+        --accent: #a3c096;
+        --accent-strong: #c1d8b6;
+        --accent-tint: #262b22;
+        --accent-contrast: #14180f;
+        --border: #35322c;
+        --border-strong: #4a4640;
+        --dot: #5c564c;
+        --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
+        --shadow-lift: 0 12px 28px -10px rgba(0, 0, 0, 0.6);
+        color-scheme: dark;
+    }
+}
+
+:root[data-theme="dark"] {
+    --bg: #171614;
+    --bg-soft: #1f1e1a;
+    --surface: #211f1c;
+    --surface-2: #282520;
+    --text: #f2eee7;
+    --text-soft: #cdc5b8;
+    --muted: #a29a8d;
+    --accent: #a3c096;
+    --accent-strong: #c1d8b6;
+    --accent-tint: #262b22;
+    --accent-contrast: #14180f;
+    --border: #35322c;
+    --border-strong: #4a4640;
+    --dot: #5c564c;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow-lift: 0 12px 28px -10px rgba(0, 0, 0, 0.6);
+    color-scheme: dark;
+}
+
+html {
+    scroll-behavior: smooth;
+    scrollbar-gutter: stable both-edges;
+}
+
+body {
+    font-family: var(--font-sans);
+    line-height: 1.65;
+    color: var(--text);
+    background-color: var(--bg);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a:hover { color: var(--accent-strong); }
+
+.container { max-width: 860px; margin: 0 auto; padding-bottom: 64px; }
+
+.skip-link {
+    position: absolute;
+    left: 12px;
+    top: -60px;
+    z-index: 200;
+    background: var(--surface);
+    color: var(--accent-strong);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    padding: 10px 16px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: top 0.18s ease;
+}
+.skip-link:focus { top: 12px; }
+
+/* --- Header ----------------------------------------------------------- */
+
+header.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    padding: 40px 24px 18px;
+    text-align: center;
+    background: var(--bg);
+    transition: padding 0.24s ease;
+}
+
+header.site-header::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    height: 28px;
+    background: linear-gradient(to bottom, var(--bg), transparent);
+    pointer-events: none;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 4px;
+    text-decoration: none;
+    color: inherit;
+}
+
+.brand-mark {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    transition: width 0.24s ease, height 0.24s ease;
+}
+
+.brand h1, .brand .wordmark {
+    font-family: var(--font-serif);
+    font-size: 2.5rem;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: -0.015em;
+    line-height: 1.1;
+    transition: font-size 0.24s ease;
+}
+
+.subtitle {
+    font-size: 0.98rem;
+    color: var(--muted);
+    margin-bottom: 18px;
+    transition: opacity 0.2s ease, max-height 0.24s ease, margin 0.24s ease;
+}
+
+/* Collapsed state: on a phone the masthead was eating roughly a quarter of the
+   viewport for the whole scroll, so once it has been read the space goes back
+   to the list. Confined to narrow screens deliberately — on a desktop there is
+   no space to reclaim, and reflowing the page mid-scroll only moves content out
+   from under the reader's cursor. */
+@media (max-width: 900px) {
+    header.site-header.is-compact { padding-top: 10px; padding-bottom: 8px; }
+    header.site-header.is-compact .brand-mark { width: 24px; height: 24px; }
+    header.site-header.is-compact .brand h1,
+    header.site-header.is-compact .brand .wordmark { font-size: 1.2rem; }
+    header.site-header.is-compact .subtitle {
+        opacity: 0;
+        max-height: 0;
+        margin-bottom: 0;
+        overflow: hidden;
+        pointer-events: none;
+    }
+}
+
+/* --- Nav -------------------------------------------------------------- */
+
+.site-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.site-nav-link {
+    font-size: 0.86rem;
+    font-weight: 500;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 7px 15px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    transition: color 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+}
+
+.site-nav-link:hover { color: var(--accent-strong); background: var(--bg-soft); }
+
+.site-nav-link.active {
+    color: var(--accent-strong);
+    border-color: var(--border);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+}
+
+.theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    margin-left: 4px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: color 0.18s ease, border-color 0.18s ease;
+}
+.theme-toggle:hover { color: var(--accent-strong); border-color: var(--border-strong); }
+.theme-toggle svg { width: 16px; height: 16px; }
+.theme-toggle .icon-dark { display: none; }
+:root[data-theme="dark"] .theme-toggle .icon-dark { display: block; }
+:root[data-theme="dark"] .theme-toggle .icon-light { display: none; }
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .theme-toggle .icon-dark { display: block; }
+    :root:not([data-theme="light"]) .theme-toggle .icon-light { display: none; }
+}
+
+/* --- Page intro ------------------------------------------------------- */
+
+main { padding: 8px 24px 0; }
+
+.page-intro { margin: 0 0 16px; }
+
+.page-intro h1, .page-intro h2 {
+    font-family: var(--font-serif);
+    font-size: 1.85rem;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+    margin-bottom: 10px;
+    text-wrap: balance;
+}
+
+.page-intro p {
+    color: var(--text-soft);
+    font-size: 0.95rem;
+    max-width: 66ch;
+    margin-bottom: 8px;
+}
+
+.breadcrumbs {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}
+.breadcrumbs a { color: var(--muted); text-decoration: none; }
+.breadcrumbs a:hover { color: var(--accent-strong); text-decoration: underline; }
+.breadcrumbs .sep { color: var(--dot); }
+
+/* --- Filter bar ------------------------------------------------------- */
+/* One row, no surrounding card: a search box and three selects. This replaced
+   a boxed panel of seventeen toggle chips, which dominated the page above the
+   thing people actually came for. */
+
+.filters { margin-bottom: 8px; }
+
+.filter-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+/* The three selects sit behind a disclosure: most visits are a search or a
+   scroll, and three dropdowns permanently open was the bulk of the clutter. */
+.filter-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font: inherit;
+    font-size: 0.85rem;
+    color: var(--text-soft);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 8px 13px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.filter-toggle:hover { border-color: var(--border-strong); color: var(--text); }
+.filter-toggle .chevron {
+    width: 11px;
+    height: 11px;
+    transition: transform 0.18s ease;
+}
+.filter-toggle[aria-expanded="true"] { color: var(--accent-strong); border-color: var(--border-strong); }
+.filter-toggle[aria-expanded="true"] .chevron { transform: rotate(90deg); }
+
+.filter-fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+.filter-fields[hidden] { display: none; }
+
+.search-field { position: relative; flex: 1 1 220px; min-width: 0; }
+
+.search-field input {
+    width: 100%;
+    font: inherit;
+    font-size: 0.9rem;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 8px 32px 8px 32px;
+}
+.search-field input::placeholder { color: var(--muted); }
+.search-field input:focus {
+    border-color: var(--accent);
+    outline: none;
+    box-shadow: 0 0 0 3px var(--accent-tint);
+}
+.search-field input::-webkit-search-cancel-button,
+.search-field input::-webkit-search-decoration { -webkit-appearance: none; appearance: none; }
+
+.search-field .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 14px;
+    height: 14px;
+    color: var(--muted);
+    pointer-events: none;
+}
+
+.search-clear {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    line-height: 0;
+}
+.search-clear:hover { color: var(--text); background: var(--bg-soft); }
+.search-clear[hidden] { display: none; }
+
+select.filter-select {
+    font: inherit;
+    font-size: 0.85rem;
+    flex: 1 1 150px;
+    color: var(--text-soft);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 8px 26px 8px 10px;
+    cursor: pointer;
+    flex: 0 1 auto;
+    width: auto;
+    max-width: 220px;
+    text-overflow: ellipsis;
+}
+select.filter-select:focus {
+    border-color: var(--accent);
+    outline: none;
+    box-shadow: 0 0 0 3px var(--accent-tint);
+}
+
+.reset-filters {
+    font: inherit;
+    font-size: 0.84rem;
+    color: var(--accent);
+    background: none;
+    border: 0;
+    cursor: pointer;
+    padding: 8px 4px;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+.reset-filters:hover { color: var(--accent-strong); }
+.reset-filters[hidden] { display: none; }
+
+/* Only occupies space once it has something to say. */
+.filter-status {
+    font-size: 0.83rem;
+    color: var(--muted);
+    margin-bottom: 14px;
+    min-height: 1.2em;
+}
+
+/* --- Meditation cards ------------------------------------------------- */
+
+.meditation-list { list-style: none; }
+
+.meditation {
+    position: relative;
+    background: var(--surface);
+    margin-bottom: 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.meditation:hover { box-shadow: var(--shadow-lift); border-color: var(--border-strong); transform: translateY(-2px); }
+.meditation:focus-within { border-color: var(--accent); }
+
+.meditation-content { padding: 20px 22px; }
+
+.meditation-meta {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 9px;
+    flex-wrap: wrap;
+    font-size: 0.82rem;
+    color: var(--muted);
+}
+
+.meditation-source, .meditation-teacher {
+    position: relative;
+    z-index: 2;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+}
+.meditation-source { text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.76rem; }
+.meditation-source:hover, .meditation-teacher:hover { color: var(--accent-strong); text-decoration: underline; }
+
+.meta-dot { width: 3px; height: 3px; background: var(--dot); border-radius: 50%; flex-shrink: 0; }
+
+.meditation-title {
+    font-family: var(--font-serif);
+    font-size: 1.24rem;
+    font-weight: 500;
+    line-height: 1.32;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+}
+
+/* The whole card is the link target: no JS click handler, so middle-click and
+   modifier-click behave exactly as they do on any other link. */
+.meditation-link { color: var(--text); text-decoration: none; }
+.meditation-link::after { content: ""; position: absolute; inset: 0; z-index: 1; }
+.meditation-link:hover { color: var(--accent-strong); }
+.meditation:hover .meditation-title { color: var(--accent-strong); }
+
+.meditation-description {
+    color: var(--text-soft);
+    line-height: 1.62;
+    font-size: 0.93rem;
+    overflow-wrap: anywhere;
+}
+.meditation-description a {
+    position: relative;
+    z-index: 2;
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+.meditation-description a:hover { color: var(--accent-strong); }
+
+.practice-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 11px; }
+
+.practice-tag {
+    position: relative;
+    z-index: 2;
+    font-size: 0.74rem;
+    font-weight: 500;
+    color: var(--text-soft);
+    background: var(--accent-tint);
+    border-radius: 999px;
+    padding: 3px 10px;
+    text-decoration: none;
+}
+.practice-tag:hover { color: var(--accent-strong); }
+
+/* Attribution and licence, kept with the recording it applies to — the
+   condition under which these are used at all, not a footnote. */
+.licence-note {
+    margin-top: 9px;
+    font-size: 0.72rem;
+    color: var(--muted);
+    line-height: 1.4;
+}
+.licence-note a { position: relative; z-index: 2; color: var(--muted); text-decoration: underline; }
+.licence-note a:hover { color: var(--accent-strong); }
+
+/* --- Audio ------------------------------------------------------------ */
+
+.meditation-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 13px;
+    flex-wrap: wrap;
+}
+
+.play-btn {
+    position: relative;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font: inherit;
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: var(--accent-strong);
+    background: var(--accent-tint);
+    border: 1px solid transparent;
+    border-radius: 999px;
+    padding: 7px 15px 7px 11px;
+    cursor: pointer;
+    transition: background 0.16s ease, border-color 0.16s ease;
+}
+.play-btn:hover { border-color: var(--accent); }
+.play-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+.play-btn .icon-pause { display: none; }
+.play-btn.is-playing .icon-pause { display: block; }
+.play-btn.is-playing .icon-play { display: none; }
+
+.source-link {
+    position: relative;
+    z-index: 2;
+    font-size: 0.82rem;
+    color: var(--muted);
+    text-decoration: none;
+}
+.source-link:hover { color: var(--accent-strong); text-decoration: underline; }
+
+/* Persistent player bar, so a practice keeps running while you browse. */
+.player-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 150;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -6px 20px -12px rgba(0, 0, 0, 0.35);
+    padding: 10px max(16px, calc(50vw - 420px));
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transform: translateY(110%);
+    transition: transform 0.28s ease;
+}
+.player-bar.is-visible { transform: translateY(0); }
+.player-bar[hidden] { display: none; }
+
+.player-toggle {
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 0;
+    background: var(--accent);
+    color: var(--accent-contrast);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.player-toggle svg { width: 16px; height: 16px; }
+.player-toggle .icon-pause { display: none; }
+.player-bar.is-playing .player-toggle .icon-pause { display: block; }
+.player-bar.is-playing .player-toggle .icon-play { display: none; }
+
+.player-body { flex: 1; min-width: 0; }
+
+.player-title {
+    font-size: 0.88rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.player-sub { font-size: 0.76rem; color: var(--muted); }
+
+.player-scrub {
+    width: 100%;
+    margin-top: 5px;
+    accent-color: var(--accent);
+    cursor: pointer;
+}
+
+.player-time {
+    font-size: 0.76rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+}
+
+.player-close {
+    flex-shrink: 0;
+    border: 0;
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 6px;
+    line-height: 0;
+    border-radius: 50%;
+}
+.player-close:hover { color: var(--text); background: var(--bg-soft); }
+
+body.has-player { padding-bottom: 104px; }
+
+/* --- Podcasts --------------------------------------------------------- */
+
+.podcast-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 10px;
+    margin: 18px 0 8px;
+}
+
+.podcast-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 11px 13px;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.podcast-card:hover { box-shadow: var(--shadow-lift); border-color: var(--border-strong); transform: translateY(-2px); }
+
+/* Artwork is hotlinked from six third-party CDNs. The wrapper carries a tinted
+   fallback so a card still reads correctly when one of them stops serving. */
+.podcast-art {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    border-radius: 7px;
+    background: var(--accent-tint);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+}
+/* The fallback mark is a masked pseudo-element rather than an inline <svg>.
+   An svg with opacity forms a stacking context and paints above plain in-flow
+   content, so it covered the artwork it was meant to stand in for; a background
+   layer cannot. It also keeps ~800 bytes of path data out of every card. */
+.podcast-art::before {
+    content: "";
+    grid-area: 1 / 1;
+    justify-self: center;
+    align-self: center;
+    width: 22px;
+    height: 22px;
+    background-color: var(--dot);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Cg%20fill%3D%22%23000%22%3E%3Cpath%20d%3D%22M32%2050%20C27%2042%2027%2027%2032%2015%20C37%2027%2037%2042%2032%2050Z%22%20transform%3D%22rotate%28-75%2032%2050%29%22%2F%3E%3Cpath%20d%3D%22M32%2050%20C27%2042%2027%2027%2032%2015%20C37%2027%2037%2042%2032%2050Z%22%20transform%3D%22rotate%28-50%2032%2050%29%22%2F%3E%3Cpath%20d%3D%22M32%2050%20C27%2042%2027%2027%2032%2015%20C37%2027%2037%2042%2032%2050Z%22%20transform%3D%22rotate%28-25%2032%2050%29%22%2F%3E%3Cpath%20d%3D%22M32%2050%20C27%2042%2027%2027%2032%2015%20C37%2027%2037%2042%2032%2050Z%22%20transform%3D%22rotate%280%2032%2050%29%22%2F%3E%3Cpath%20d%3D%22M32%2050%20C27%2042%2027%2027%2032%2015%20C37%2027%2037%2042%2032%2050Z%22%20transform%3D%22rotate%2825%2032%2050%29%22%2F%3E%3Cpath%20d%3D%22M32%2050%20C27%2042%2027%2027%2032%2015%20C37%2027%2037%2042%2032%2050Z%22%20transform%3D%22rotate%2850%2032%2050%29%22%2F%3E%3Cpath%20d%3D%22M32%2050%20C27%2042%2027%2027%2032%2015%20C37%2027%2037%2042%2032%2050Z%22%20transform%3D%22rotate%2875%2032%2050%29%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Cg%20fill%3D%22%23000%22%3E%3Cpath%20d%3D%22M32%2050%20C27%2042%2027%2027%2032%2015%20C37%2027%2037%2042%2032%2050Z%22%20transform%3D%22rotate%28-75%2032%2050%29%22%2F%3E%3Cpath%20d%3D%22M32%2050%20C27%2042%2027%2027%2032%2015%20C37%2027%2037%2042%2032%2050Z%22%20transform%3D%22rotate%28-50%2032%2050%29%22%2F%3E%3Cpath%20d%3D%22M32%2050%20C27%2042%2027%2027%2032%2015%20C37%2027%2037%2042%2032%2050Z%22%20transform%3D%22rotate%28-25%2032%2050%29%22%2F%3E%3Cpath%20d%3D%22M32%2050%20C27%2042%2027%2027%2032%2015%20C37%2027%2037%2042%2032%2050Z%22%20transform%3D%22rotate%280%2032%2050%29%22%2F%3E%3Cpath%20d%3D%22M32%2050%20C27%2042%2027%2027%2032%2015%20C37%2027%2037%2042%2032%2050Z%22%20transform%3D%22rotate%2825%2032%2050%29%22%2F%3E%3Cpath%20d%3D%22M32%2050%20C27%2042%2027%2027%2032%2015%20C37%2027%2037%2042%2032%2050Z%22%20transform%3D%22rotate%2850%2032%2050%29%22%2F%3E%3Cpath%20d%3D%22M32%2050%20C27%2042%2027%2027%2032%2015%20C37%2027%2037%2042%2032%2050Z%22%20transform%3D%22rotate%2875%2032%2050%29%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / contain no-repeat;
+}
+
+.podcast-art img {
+    grid-area: 1 / 1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.podcast-art img.is-broken { display: none; }
+
+.podcast-info { min-width: 0; }
+.podcast-name {
+    display: block;
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    font-weight: 500;
+    line-height: 1.3;
+    margin-bottom: 3px;
+}
+.podcast-card:hover .podcast-name { color: var(--accent-strong); }
+.podcast-count { display: block; font-size: 0.75rem; color: var(--muted); }
+
+/* --- Listen page ------------------------------------------------------ */
+
+.listen-body { max-width: 62ch; }
+.listen-body p { color: var(--text-soft); margin-bottom: 14px; }
+.listen-meta { display: flex; gap: 9px; align-items: center; flex-wrap: wrap; color: var(--muted); font-size: 0.86rem; margin-bottom: 16px; }
+.listen-audio { width: 100%; margin: 20px 0 8px; }
+
+.callout {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    font-size: 0.9rem;
+    color: var(--text-soft);
+    margin: 22px 0;
+}
+.callout a { color: var(--accent); }
+
+/* --- Pagination ------------------------------------------------------- */
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 28px 0 8px;
+    flex-wrap: wrap;
+}
+
+.pagination a, .pagination span.page-number, .pagination span.page-ellipsis {
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: var(--radius-sm);
+    padding: 8px 13px;
+    text-decoration: none;
+    color: var(--text-soft);
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    min-width: 40px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+.pagination a:hover { border-color: var(--border-strong); background: var(--bg-soft); color: var(--text); }
+.pagination .current {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-contrast);
+}
+.pagination .page-ellipsis { border-color: transparent; background: none; color: var(--muted); min-width: 0; padding: 8px 2px; }
+.pagination .disabled { opacity: 0.4; pointer-events: none; }
+
+/* --- About / prose ---------------------------------------------------- */
+
+.about {
+    max-width: 64ch;
+    margin: 44px auto 0;
+    padding: 28px 0 0;
+    border-top: 1px solid var(--border);
+    color: var(--text-soft);
+    font-size: 0.95rem;
+    line-height: 1.7;
+}
+.about h2 {
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 10px;
+}
+.about p { margin-bottom: 12px; }
+.about a { color: var(--accent); }
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+    font-size: 0.95rem;
+}
+.empty-state[hidden] { display: none; }
+
+/* --- Prose (About) ---------------------------------------------------- */
+
+.prose {
+    max-width: 62ch;
+    margin: 0 auto;
+    color: var(--text-soft);
+    font-size: 0.97rem;
+    line-height: 1.7;
+}
+.prose h1 {
+    font-family: var(--font-serif);
+    font-size: 1.85rem;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: -0.015em;
+    margin-bottom: 16px;
+    text-align: center;
+}
+.prose p { margin-bottom: 14px; }
+.prose h2 {
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--text);
+    margin: 30px 0 10px;
+    letter-spacing: -0.01em;
+}
+.prose a { color: var(--accent); }
+.prose .podcast-grid { margin-top: 16px; }
+
+/* --- Footer ----------------------------------------------------------- */
+
+footer.site-footer {
+    text-align: center;
+    padding: 44px 24px 8px;
+    color: var(--muted);
+    font-size: 0.84rem;
+}
+footer.site-footer p { margin: 5px 0; }
+footer.site-footer a { color: var(--accent); text-decoration: none; }
+footer.site-footer a:hover { color: var(--accent-strong); text-decoration: underline; }
+
+/* --- Utilities -------------------------------------------------------- */
+
+.hidden { display: none !important; }
+.nowrap { white-space: nowrap; }
+
+.sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar { width: 9px; height: 9px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 5px; }
+
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { transition: none !important; animation: none !important; }
+    .meditation:hover, .podcast-card:hover { transform: none; }
+}
+
+@media (max-width: 768px) {
+    header.site-header { padding: 24px 16px 14px; }
+    .brand h1, .brand .wordmark { font-size: 1.85rem; }
+    .brand-mark { width: 30px; height: 30px; }
+    .subtitle { font-size: 0.9rem; margin-bottom: 14px; }
+    main { padding: 8px 16px 0; }
+    .page-intro h1, .page-intro h2 { font-size: 1.5rem; }
+    .meditation-content { padding: 17px 17px; }
+    .meditation-title { font-size: 1.12rem; }
+    .meditation-description { font-size: 0.89rem; }
+    .about { font-size: 0.9rem; }
+    .player-bar { padding: 9px 14px; gap: 10px; }
+    .player-time { display: none; }
+    body.has-player { padding-bottom: 96px; }
+}
