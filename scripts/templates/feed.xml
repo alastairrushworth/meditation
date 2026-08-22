@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+     xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>{{ site_name }} — curated guided meditations</title>
+    <link>{{ site_url }}</link>
+    <atom:link href="{{ site_url }}feed.xml" rel="self" type="application/rss+xml"/>
+    <description>{{ feed_description }}</description>
+    <language>{{ lang }}</language>
+    <lastBuildDate>{{ build_date }}</lastBuildDate>
+    <generator>{{ repo_url }}</generator>
+    <copyright>{{ feed_copyright }}</copyright>
+    <image>
+      <url>{{ site_url }}icon-512.png</url>
+      <title>{{ site_name }}</title>
+      <link>{{ site_url }}</link>
+    </image>
+    <itunes:author>{{ author_name }}</itunes:author>
+    <itunes:summary>{{ feed_description }}</itunes:summary>
+    <itunes:owner><itunes:name>{{ author_name }}</itunes:name></itunes:owner>
+    <itunes:image href="{{ site_url }}icon-512.png"/>
+    <itunes:category text="Religion &amp; Spirituality"><itunes:category text="Buddhism"/></itunes:category>
+    <itunes:explicit>false</itunes:explicit>
+{%- for m in items %}
+    <item>
+      <title>{{ m.title_x }}</title>
+      <link>{{ m.link_x }}</link>
+      <guid isPermaLink="false">{{ site_url }}#{{ m.id }}</guid>
+      {%- if m.rfc822 %}
+      <pubDate>{{ m.rfc822 }}</pubDate>
+      {%- endif %}
+      <description>{{ m.summary_x }}</description>
+      {%- if m.audio_url %}
+      <enclosure url="{{ m.audio_url_x }}" type="{{ m.audio_type or 'audio/mpeg' }}"{% if m.audio_bytes %} length="{{ m.audio_bytes }}"{% endif %}/>
+      {%- endif %}
+      {%- if m.teacher %}
+      <itunes:author>{{ m.teacher_x }}</itunes:author>
+      {%- endif %}
+      {%- if m.duration %}
+      <itunes:duration>{{ m.duration }}</itunes:duration>
+      {%- endif %}
+      {%- if m.licence %}
+      <copyright>{{ m.attribution }} ({{ m.licence.name }}, {{ m.licence.url }})</copyright>
+      {%- endif %}
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+{%- endfor %}
+  </channel>
+</rss>

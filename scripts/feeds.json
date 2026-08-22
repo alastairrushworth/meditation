@@ -2,83 +2,256 @@
   "feeds": [
     {
       "name": "AudioDharma",
+      "slug": "audiodharma",
       "url": "http://feeds.feedburner.com/audiodharma",
       "website": "https://www.audiodharma.org/"
     },
     {
       "name": "Dharma Seed",
+      "slug": "dharma-seed",
       "url": "https://www.dharmaseed.org/feeds/recordings/",
-      "website": "https://www.dharmaseed.org/"
+      "website": "https://www.dharmaseed.org/",
+      "aggregator": true
     },
     {
       "name": "Insight Meditation Society - Forest Refuge",
+      "slug": "ims-forest-refuge",
       "url": "https://IMSFR.dharmaseed.org/feeds/recordings/",
       "website": "https://www.dharma.org/forest-refuge/"
     },
     {
       "name": "Insight Meditation Society - Retreat Center",
+      "slug": "ims-retreat-center",
       "url": "https://imsrc.dharmaseed.org/feeds/recordings/",
       "website": "https://www.dharma.org/retreat-center/"
     },
     {
-      "name": "Tara Brach",
-      "url": "https://tarabrach.libsyn.com/rss",
-      "website": "https://www.tarabrach.com/"
-    },
-    {
-      "name": "Heart Wisdom with Jack Kornfield",
-      "url": "https://rss.art19.com/heart-wisdom-with-jack-kornfield",
-      "website": "https://jackkornfield.com/"
-    },
-    {
       "name": "Spirit Rock Meditation Center",
+      "slug": "spirit-rock",
       "url": "https://sr.dharmaseed.org/feeds/recordings/",
       "website": "https://www.spiritrock.org/"
     },
     {
-      "name": "Insight Hour with Joseph Goldstein",
-      "url": "https://rss.art19.com/insight-hour-with-joseph-goldstein",
-      "website": "https://beherenownetwork.com/category/insight-hour-with-joseph-goldstein/"
-    },
-    {
-      "name": "Metta Hour with Sharon Salzberg",
-      "url": "https://rss.art19.com/metta-hour-with-sharon-salzberg",
-      "website": "https://www.sharonsalzberg.com/metta-hour-podcast"
-    },
-    {
       "name": "True North Insight",
+      "slug": "true-north-insight",
       "url": "https://TNI.dharmaseed.org/feeds/recordings/",
       "website": "https://www.truenorthinsight.org/"
     },
     {
       "name": "Ajahn Brahm Podcast",
+      "slug": "ajahn-brahm",
       "url": "https://deeperdhamma.podbean.com/feed.xml",
       "website": "https://bswa.org/"
     },
     {
-      "name": "Secular Buddhism",
-      "url": "https://feeds.acast.com/public/shows/6359a8448c5fe9001207c0ac",
-      "website": "https://secularbuddhism.com/"
-    },
-    {
       "name": "Gaia House",
+      "slug": "gaia-house",
       "url": "https://gaia.dharmaseed.org/feeds/recordings/",
       "website": "https://gaiahouse.co.uk/"
     },
     {
       "name": "Barre Center for Buddhist Studies",
+      "slug": "barre-center",
       "url": "https://BCBS.dharmaseed.org/feeds/recordings/",
       "website": "https://www.buddhistinquiry.org/"
     },
     {
       "name": "Insight Santa Cruz",
+      "slug": "insight-santa-cruz",
       "url": "https://ISC.dharmaseed.org/feeds/recordings/",
       "website": "https://www.insightsantacruz.org/"
     },
     {
       "name": "Cambridge Insight Meditation Center",
+      "slug": "cambridge-insight",
       "url": "https://cimc.dharmaseed.org/feeds/recordings/",
       "website": "https://www.cambridgeinsight.org/"
+    },
+    {
+      "name": "Aloka Vihara Forest Monastery",
+      "slug": "aloka-vihara-forest-monastery",
+      "url": "https://av.dharmaseed.org/feeds/recordings/",
+      "website": "https://av.dharmaseed.org/"
+    },
+    {
+      "name": "Amaravati Monastery",
+      "slug": "amaravati-monastery",
+      "url": "https://amv.dharmaseed.org/feeds/recordings/",
+      "website": "https://amv.dharmaseed.org/"
+    },
+    {
+      "name": "Auckland Insight Meditation",
+      "slug": "auckland-insight-meditation",
+      "url": "https://aim.dharmaseed.org/feeds/recordings/",
+      "website": "https://aim.dharmaseed.org/"
+    },
+    {
+      "name": "Australian Insight Meditation Network",
+      "slug": "australian-insight-meditation-network",
+      "url": "https://aimn.dharmaseed.org/feeds/recordings/",
+      "website": "https://aimn.dharmaseed.org/"
+    },
+    {
+      "name": "Bhavana Society of West Virginia",
+      "slug": "bhavana-society-of-west-virginia",
+      "url": "https://bswv.dharmaseed.org/feeds/recordings/",
+      "website": "https://bswv.dharmaseed.org/"
+    },
+    {
+      "name": "Big Bear Retreat Center",
+      "slug": "big-bear-retreat-center",
+      "url": "https://bbrc.dharmaseed.org/feeds/recordings/",
+      "website": "https://bbrc.dharmaseed.org/"
+    },
+    {
+      "name": "Blue Mountains Insight Meditation Centre",
+      "slug": "blue-mountains-insight-meditation-centre",
+      "url": "https://bmimc.dharmaseed.org/feeds/recordings/",
+      "website": "https://bmimc.dharmaseed.org/"
+    },
+    {
+      "name": "Bodhi College",
+      "slug": "bodhi-college",
+      "url": "https://bc.dharmaseed.org/feeds/recordings/",
+      "website": "https://bc.dharmaseed.org/"
+    },
+    {
+      "name": "Chanmyay Myaing Meditation Centre",
+      "slug": "chanmyay-myaing-meditation-centre",
+      "url": "https://cmmc.dharmaseed.org/feeds/recordings/",
+      "website": "https://cmmc.dharmaseed.org/"
+    },
+    {
+      "name": "Cloud Mountain Retreat Center",
+      "slug": "cloud-mountain-retreat-center",
+      "url": "https://cmrc.dharmaseed.org/feeds/recordings/",
+      "website": "https://cmrc.dharmaseed.org/"
+    },
+    {
+      "name": "Common Ground Meditation Center",
+      "slug": "common-ground-meditation-center",
+      "url": "https://cgmc.dharmaseed.org/feeds/recordings/",
+      "website": "https://cgmc.dharmaseed.org/"
+    },
+    {
+      "name": "Dassanāya Buddhist Community",
+      "slug": "dassanaya-buddhist-community",
+      "url": "https://dbc.dharmaseed.org/feeds/recordings/",
+      "website": "https://dbc.dharmaseed.org/"
+    },
+    {
+      "name": "Flagstaff Insight Meditation Community",
+      "slug": "flagstaff-insight-meditation-community",
+      "url": "https://fimc.dharmaseed.org/feeds/recordings/",
+      "website": "https://fimc.dharmaseed.org/"
+    },
+    {
+      "name": "Freely Given Retreats",
+      "slug": "freely-given-retreats",
+      "url": "https://fgr.dharmaseed.org/feeds/recordings/",
+      "website": "https://fgr.dharmaseed.org/"
+    },
+    {
+      "name": "Insight Meditation Community of Washington DC",
+      "slug": "insight-meditation-community-of-washington-d",
+      "url": "https://imcw.dharmaseed.org/feeds/recordings/",
+      "website": "https://imcw.dharmaseed.org/"
+    },
+    {
+      "name": "Insight Meditation South Bay - Silicon Valley",
+      "slug": "insight-meditation-south-bay-silicon-valley",
+      "url": "https://imsb.dharmaseed.org/feeds/recordings/",
+      "website": "https://imsb.dharmaseed.org/"
+    },
+    {
+      "name": "Karuna Buddhist Vihara",
+      "slug": "karuna-buddhist-vihara",
+      "url": "https://kbv.dharmaseed.org/feeds/recordings/",
+      "website": "https://kbv.dharmaseed.org/"
+    },
+    {
+      "name": "Lokanta Vihara",
+      "slug": "lokanta-vihara",
+      "url": "https://lv.dharmaseed.org/feeds/recordings/",
+      "website": "https://lv.dharmaseed.org/"
+    },
+    {
+      "name": "London Insight Meditation",
+      "slug": "london-insight-meditation",
+      "url": "https://lim.dharmaseed.org/feeds/recordings/",
+      "website": "https://lim.dharmaseed.org/"
+    },
+    {
+      "name": "Meditationszentrum Beatenberg",
+      "slug": "meditationszentrum-beatenberg",
+      "url": "https://mb.dharmaseed.org/feeds/recordings/",
+      "website": "https://mb.dharmaseed.org/"
+    },
+    {
+      "name": "Moulin de Chaves",
+      "slug": "moulin-de-chaves",
+      "url": "https://moulin.dharmaseed.org/feeds/recordings/",
+      "website": "https://moulin.dharmaseed.org/"
+    },
+    {
+      "name": "Mountain Hermitage",
+      "slug": "mountain-hermitage",
+      "url": "https://mh.dharmaseed.org/feeds/recordings/",
+      "website": "https://mh.dharmaseed.org/"
+    },
+    {
+      "name": "New York Insight Meditation Center",
+      "slug": "new-york-insight-meditation-center",
+      "url": "https://nyimc.dharmaseed.org/feeds/recordings/",
+      "website": "https://nyimc.dharmaseed.org/"
+    },
+    {
+      "name": "Nirodha Insight Meditation in Finland",
+      "slug": "nirodha-insight-meditation-in-finland",
+      "url": "https://nimf.dharmaseed.org/feeds/recordings/",
+      "website": "https://nimf.dharmaseed.org/"
+    },
+    {
+      "name": "SanghaSeva",
+      "slug": "sanghaseva",
+      "url": "https://sase.dharmaseed.org/feeds/recordings/",
+      "website": "https://sase.dharmaseed.org/"
+    },
+    {
+      "name": "Sati Saraniya Hermitage",
+      "slug": "sati-saraniya-hermitage",
+      "url": "https://satisaraniya.dharmaseed.org/feeds/recordings/",
+      "website": "https://satisaraniya.dharmaseed.org/"
+    },
+    {
+      "name": "Shakti Vihara",
+      "slug": "shakti-vihara",
+      "url": "https://sv.dharmaseed.org/feeds/recordings/",
+      "website": "https://sv.dharmaseed.org/"
+    },
+    {
+      "name": "Southern Insight Meditation",
+      "slug": "southern-insight-meditation",
+      "url": "https://sim.dharmaseed.org/feeds/recordings/",
+      "website": "https://sim.dharmaseed.org/"
+    },
+    {
+      "name": "Twin Cities Vipassana Collective",
+      "slug": "twin-cities-vipassana-collective",
+      "url": "https://tcvc.dharmaseed.org/feeds/recordings/",
+      "website": "https://tcvc.dharmaseed.org/"
+    },
+    {
+      "name": "Uncontrived",
+      "slug": "uncontrived",
+      "url": "https://uncontrived.dharmaseed.org/feeds/recordings/",
+      "website": "https://uncontrived.dharmaseed.org/"
+    },
+    {
+      "name": "Vallecitos Mountain Retreat Center",
+      "slug": "vallecitos-mountain-retreat-center",
+      "url": "https://vmrc.dharmaseed.org/feeds/recordings/",
+      "website": "https://vmrc.dharmaseed.org/"
     }
   ]
 }
