@@ -1,0 +1,745 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+     xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Guided Meditations — curated guided meditations</title>
+    <link>https://alastairrushworth.com/meditation/</link>
+    <atom:link href="https://alastairrushworth.com/meditation/feed.xml" rel="self" type="application/rss+xml"/>
+    <description>Guided meditations only — the practices, not the talks — curated weekly from 42 insight-meditation and dharma podcasts.</description>
+    <language>en-GB</language>
+    <lastBuildDate>Sat, 22 Aug 2026 16:55:59 +0000</lastBuildDate>
+    <generator>https://github.com/alastairrushworth/meditation</generator>
+    <copyright>Each recording remains the copyright of its teacher and centre, and is listed here under the Creative Commons licence its publisher applies. Audio is served by the original publisher.</copyright>
+    <image>
+      <url>https://alastairrushworth.com/meditation/icon-512.png</url>
+      <title>Guided Meditations</title>
+      <link>https://alastairrushworth.com/meditation/</link>
+    </image>
+    <itunes:author>Alastair Rushworth</itunes:author>
+    <itunes:summary>Guided meditations only — the practices, not the talks — curated weekly from 42 insight-meditation and dharma podcasts.</itunes:summary>
+    <itunes:owner><itunes:name>Alastair Rushworth</itunes:name></itunes:owner>
+    <itunes:image href="https://alastairrushworth.com/meditation/icon-512.png"/>
+    <itunes:category text="Religion &amp; Spirituality"><itunes:category text="Buddhism"/></itunes:category>
+    <itunes:explicit>false</itunes:explicit>
+    <item>
+      <title>Guided Meditation: The Meeting of Sensations and Awareness</title>
+      <link>https://www.audiodharma.org/talks/26138</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#04a7c834a1ac5fda</guid>
+      <pubDate>Fri, 21 Aug 2026 00:00:00 +0000</pubDate>
+      <description>This talk was given by Gil Fronsdal on 2026.08.21 at the Insight Meditation Center in Redwood City, CA.</description>
+      <enclosure url="https://audiodharma.us-east-1.linodeobjects.com/talks/26138/20260821-gil_fronsdal-imc-guided_meditation_the_meeting_of_sensations_and_awareness.mp3" type="audio/mp3" length="1761"/>
+      <itunes:author>Gil Fronsdal</itunes:author>
+      <itunes:duration>29 min</itunes:duration>
+      <copyright>Gil Fronsdal · AudioDharma (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Guided Meditation: Release or Growth</title>
+      <link>https://www.audiodharma.org/talks/26133</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#e68062338db9a7c8</guid>
+      <pubDate>Thu, 20 Aug 2026 00:00:00 +0000</pubDate>
+      <description>This talk was given by Gil Fronsdal on 2026.08.20 at the Insight Meditation Center in Redwood City, CA.</description>
+      <enclosure url="https://audiodharma.us-east-1.linodeobjects.com/talks/26133/20260820-gil_fronsdal-imc-guided_meditation_release_or_growth.mp3" type="audio/mp3" length="1833"/>
+      <itunes:author>Gil Fronsdal</itunes:author>
+      <itunes:duration>31 min</itunes:duration>
+      <copyright>Gil Fronsdal · AudioDharma (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Guided Meditation: Attention is the spear tip of karma</title>
+      <link>https://www.audiodharma.org/talks/26132</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#7eb40c93d881ab22</guid>
+      <pubDate>Thu, 20 Aug 2026 00:00:00 +0000</pubDate>
+      <description>This talk was given by Matthew Brensilver on 2026.08.19 at the Insight Meditation Center in Redwood City, CA.</description>
+      <enclosure url="https://audiodharma.us-east-1.linodeobjects.com/talks/26132/20260819-matthew_brensilver-imc-guided_meditation_attention_is_the_spear_tip_of_karma.mp3" type="audio/mp3" length="1606"/>
+      <itunes:author>Matthew Brensilver</itunes:author>
+      <itunes:duration>27 min</itunes:duration>
+      <copyright>Matthew Brensilver · AudioDharma (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Guided Meditation: The Call of Sensations</title>
+      <link>https://www.audiodharma.org/talks/26126</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#c524f9fb761092e1</guid>
+      <pubDate>Wed, 19 Aug 2026 00:00:00 +0000</pubDate>
+      <description>This talk was given by Gil Fronsdal on 2026.08.19 at the Insight Meditation Center in Redwood City, CA.</description>
+      <enclosure url="https://audiodharma.us-east-1.linodeobjects.com/talks/26126/20260819-gil_fronsdal-imc-guided_meditation_the_call_of_sensations.mp3" type="audio/mp3" length="1825"/>
+      <itunes:author>Gil Fronsdal</itunes:author>
+      <itunes:duration>30 min</itunes:duration>
+      <copyright>Gil Fronsdal · AudioDharma (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>2026 July | Weekend Meditation Retreat (5/5)</title>
+      <link>https://deeperdhamma.podbean.com/e/2026-july-weekend-meditation-retreat-55-venerable-nibbuto/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#bbd2d066c25f604a</guid>
+      <pubDate>Wed, 19 Aug 2026 00:00:00 +0000</pubDate>
+      <description>Weekend Meditation Retreat with Venerable Nibbuto at Jhana Grove Retreat Centre in Serpentine, Western Australia, from 3rd July - 5th July 2026. Track 5 : – Q &amp; A , DhammaTalk &amp; Guided Meditation – 5th July 26. See the full retreat on bswa.org here.</description>
+      <enclosure url="https://mcdn.podbean.com/mf/web/bnhhxuj9r8dp8cup/5_Q_A_Dhamma_talk_and_guided_meditation_130-230pm6ojd2.mp3" type="audio/mpeg" length="145199293"/>
+      <itunes:author>Venerable Nibbuto</itunes:author>
+      <itunes:duration>1 hr 41 min</itunes:duration>
+      <copyright>Venerable Nibbuto · Ajahn Brahm Podcast (CC BY-NC-ND 3.0, https://creativecommons.org/licenses/by-nc-nd/3.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Guided Meditation on Four Foundational Meditative Practices</title>
+      <link>https://dharmaseed.org/talks/98940/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#b44a6acf3e4bcac6</guid>
+      <pubDate>Wed, 19 Aug 2026 00:00:00 +0000</pubDate>
+      <description>Connected with the later talk giving a contemporary map of our practices, we review four foundational practices: (1) developing concentration (samadhi); (2) cultivating general mindfulness, (3) cultivating mindfulness of impermanence; and (4) a heart practice developing kindness, compassion, or other heart qualities. This is followed by two brief reflections on one&#39;s practice.</description>
+      <enclosure url="https://dharmaseed.org//talks/98940/20260819-Donald_Rothberg-SR-guided_meditation_on_four_foundational_meditative_practices-98940.mp3?rss=" type="audio/mpeg" length="26708226"/>
+      <itunes:author>Donald Rothberg</itunes:author>
+      <itunes:duration>32 min</itunes:duration>
+      <copyright>Donald Rothberg · Spirit Rock Meditation Center (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>2026 July | Weekend Meditation Retreat (1/5)</title>
+      <link>https://deeperdhamma.podbean.com/e/2026-july-weekend-meditation-retreat-15-venerable-nibbuto/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#afec67fdaa3e4312</guid>
+      <pubDate>Wed, 19 Aug 2026 00:00:00 +0000</pubDate>
+      <description>Weekend Meditation Retreat with Venerable Nibbuto at Jhana Grove Retreat Centre in Serpentine, Western Australia, from 3rd July - 5th July 2026. Track 1 : – Introduction Talk &amp; Guided Meditation – 3rd July 26. See the full retreat on here. Support us on https://ko-fi.com/thebuddhistsocietyofwa BSWA teachings are available from: BSWA Teachings BSWA Podcast Channel BSWA DeeperDhamma Podbean Channel…</description>
+      <enclosure url="https://mcdn.podbean.com/mf/web/9tvj77sh9iskrdcu/1_Introduction_talk_and_guided_meditation_800pm6d2kg.mp3" type="audio/mpeg" length="92067483"/>
+      <itunes:author>Venerable Nibbuto</itunes:author>
+      <itunes:duration>1 hr 4 min</itunes:duration>
+      <copyright>Venerable Nibbuto · Ajahn Brahm Podcast (CC BY-NC-ND 3.0, https://creativecommons.org/licenses/by-nc-nd/3.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>2026 June | Weekend Meditation Retreat (4/5)</title>
+      <link>https://deeperdhamma.podbean.com/e/2026-june-weekend-meditation-retreat-45-venerable-jhayako/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#8e2dfa347d38e2c0</guid>
+      <pubDate>Wed, 19 Aug 2026 00:00:00 +0000</pubDate>
+      <description>Weekend Meditation Retreat with Venerable Jhayako at Jhana Grove Retreat Centre in Serpentine, Western Australia, from 19th June - 21st June 2026. Track 4 : - Talk &amp; Guided Meditation – 21st June 26. See the full retreat on bswa.org here. Support us on https://ko-fi.com/thebuddhistsocietyofwa BSWA teachings are available from: BSWA Teachings BSWA Podcast Channel BSWA DeeperDhamma Podbean Channel…</description>
+      <enclosure url="https://mcdn.podbean.com/mf/web/84wpbmbqqa3fxr2v/4_Talk_and_Guided_Meditation_8_30_-_9_30_am6xmtj.mp3" type="audio/mpeg" length="82135510"/>
+      <itunes:author>Venerable Jhayako</itunes:author>
+      <itunes:duration>57 min</itunes:duration>
+      <copyright>Venerable Jhayako · Ajahn Brahm Podcast (CC BY-NC-ND 3.0, https://creativecommons.org/licenses/by-nc-nd/3.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>2026 June | Weekend Meditation Retreat (5/5)</title>
+      <link>https://deeperdhamma.podbean.com/e/2026-june-weekend-meditation-retreat-55-venerable-jhayako/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#6de9a6a8e820e739</guid>
+      <pubDate>Wed, 19 Aug 2026 00:00:00 +0000</pubDate>
+      <description>Weekend Meditation Retreat with Venerable Jhayako at Jhana Grove Retreat Centre in Serpentine, Western Australia, from 19th June - 21st June 2026. Track 5 : – Final Talk – 21st June 26. See the full retreat on bswa.org here. Support us on https://ko-fi.com/thebuddhistsocietyofwa BSWA teachings are available from: BSWA Teachings BSWA Podcast Channel BSWA DeeperDhamma Podbean Channel BSWA YouTube…</description>
+      <enclosure url="https://mcdn.podbean.com/mf/web/npb9wkzsnaixvi4i/5_Final_talk_1-2_pm6unkr.mp3" type="audio/mpeg" length="67831261"/>
+      <itunes:author>Venerable Jhayako</itunes:author>
+      <itunes:duration>47 min</itunes:duration>
+      <copyright>Venerable Jhayako · Ajahn Brahm Podcast (CC BY-NC-ND 3.0, https://creativecommons.org/licenses/by-nc-nd/3.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>2026 June | Weekend Meditation Retreat (2/5)</title>
+      <link>https://deeperdhamma.podbean.com/e/2026-june-weekend-meditation-retreat-25-venerable-jhayako/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#6983595742f72eb7</guid>
+      <pubDate>Wed, 19 Aug 2026 00:00:00 +0000</pubDate>
+      <description>Weekend Meditation Retreat with Venerable Jhayako at Jhana Grove Retreat Centre in Serpentine, Western Australia, from 19th June - 21st June 2026. Track 2 : – Talk &amp; Guided Meditation - 20th June 26. See the full retreat on bswa.org here. Support us on https://ko-fi.com/thebuddhistsocietyofwa BSWA teachings are available from: BSWA Teachings BSWA Podcast Channel BSWA DeeperDhamma Podbean Channel…</description>
+      <enclosure url="https://mcdn.podbean.com/mf/web/s3yepjrsint4tx2x/2_Talk_and_Guided_Meditation_1_30_-_2_30_pmaxqba.mp3" type="audio/mpeg" length="85810625"/>
+      <itunes:author>Venerable Jhayako</itunes:author>
+      <itunes:duration>59 min</itunes:duration>
+      <copyright>Venerable Jhayako · Ajahn Brahm Podcast (CC BY-NC-ND 3.0, https://creativecommons.org/licenses/by-nc-nd/3.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>2026 July | Weekend Meditation Retreat (4/5)</title>
+      <link>https://deeperdhamma.podbean.com/e/2026-july-weekend-meditation-retreat-45-venerable-nibbuto/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#596054eef701a83d</guid>
+      <pubDate>Wed, 19 Aug 2026 00:00:00 +0000</pubDate>
+      <description>Weekend Meditation Retreat with Venerable Nibbuto at Jhana Grove Retreat Centre in Serpentine, Western Australia, from 3rd July - 5th July 2026. Track 4 : - – Dhamma Talk &amp; Guided Meditation - 5th July 26. See the full retreat on bswa.org here.</description>
+      <enclosure url="https://mcdn.podbean.com/mf/web/q5dbz5a8kmv9ahac/4_Dhamma_talk_and_guided_meditation_830am8x1u1.mp3" type="audio/mpeg" length="129994765"/>
+      <itunes:author>Venerable Nibbuto</itunes:author>
+      <itunes:duration>1 hr 30 min</itunes:duration>
+      <copyright>Venerable Nibbuto · Ajahn Brahm Podcast (CC BY-NC-ND 3.0, https://creativecommons.org/licenses/by-nc-nd/3.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>2026 June | Weekend Meditation Retreat (1/5)</title>
+      <link>https://deeperdhamma.podbean.com/e/2026-june-weekend-meditation-retreat-15-venerable-jhayako/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#51175f9e1cc93a0f</guid>
+      <pubDate>Wed, 19 Aug 2026 00:00:00 +0000</pubDate>
+      <description>Weekend Meditation Retreat with Venerable Jhayako at Jhana Grove Retreat Centre in Serpentine, Western Australia, from 19th June - 21st June 2026. Track 1 : – Talk &amp; Guided Meditation – 20th June 26. See the full retreat on here. Support us on https://ko-fi.com/thebuddhistsocietyofwa BSWA teachings are available from: BSWA Teachings BSWA Podcast Channel BSWA DeeperDhamma Podbean Channel BSWA…</description>
+      <enclosure url="https://mcdn.podbean.com/mf/web/i6w7ssv5783hx3na/1_Talk_and_Guided_Meditation_8_15_-_9_15_am8u992.mp3" type="audio/mpeg" length="91455572"/>
+      <itunes:author>Venerable Jhayako</itunes:author>
+      <itunes:duration>1 hr 3 min</itunes:duration>
+      <copyright>Venerable Jhayako · Ajahn Brahm Podcast (CC BY-NC-ND 3.0, https://creativecommons.org/licenses/by-nc-nd/3.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>2026 July | Weekend Meditation Retreat (2/5)</title>
+      <link>https://deeperdhamma.podbean.com/e/2026-july-weekend-meditation-retreat-25-venerable-nibbuto/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#270d7ca5f147c9e7</guid>
+      <pubDate>Wed, 19 Aug 2026 00:00:00 +0000</pubDate>
+      <description>Weekend Meditation Retreat with Venerable Nibbuto at Jhana Grove Retreat Centre in Serpentine, Western Australia, from 3rd July - 5th July 2026. Track 2 : – Dhamma Talk &amp; Guided Meditation - 4th July 26. See the full retreat on bswa.org here.</description>
+      <enclosure url="https://mcdn.podbean.com/mf/web/74upzj9yynv5db7w/2_Dhamma_talk_and_guided_meditation_830am84qmz.mp3" type="audio/mpeg" length="106177361"/>
+      <itunes:author>Venerable Nibbuto</itunes:author>
+      <itunes:duration>1 hr 14 min</itunes:duration>
+      <copyright>Venerable Nibbuto · Ajahn Brahm Podcast (CC BY-NC-ND 3.0, https://creativecommons.org/licenses/by-nc-nd/3.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>2026 July | Weekend Meditation Retreat (3/5)</title>
+      <link>https://deeperdhamma.podbean.com/e/2026-july-weekend-meditation-retreat-35-venerable-nibbuto/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#235ab64dd851482c</guid>
+      <pubDate>Wed, 19 Aug 2026 00:00:00 +0000</pubDate>
+      <description>Weekend Meditation Retreat with Venerable Nibbuto at Jhana Grove Retreat Centre in Serpentine, Western Australia, from 3rd July - 5th July 2026. Track 3 : Q &amp; A, Guided Meditation - 4th July 26. See the full retreat on bswa.org here. Support us on https://ko-fi.com/thebuddhistsocietyofwa BSWA teachings are available from: BSWA Teachings BSWA Podcast Channel BSWA DeeperDhamma Podbean Channel BSWA…</description>
+      <enclosure url="https://mcdn.podbean.com/mf/web/qmapgmdai9rbzfvv/3_Q_A_guided_meditation_730pmbppr5.mp3" type="audio/mpeg" length="162502162"/>
+      <itunes:author>Venerable Nibbuto</itunes:author>
+      <itunes:duration>1 hr 53 min</itunes:duration>
+      <copyright>Venerable Nibbuto · Ajahn Brahm Podcast (CC BY-NC-ND 3.0, https://creativecommons.org/licenses/by-nc-nd/3.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>2026 June | Weekend Meditation Retreat (3/5)</title>
+      <link>https://deeperdhamma.podbean.com/e/2026-june-weekend-meditation-retreat-35-venerable-jhayako/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#0bc9a27ef84ef2e9</guid>
+      <pubDate>Wed, 19 Aug 2026 00:00:00 +0000</pubDate>
+      <description>Weekend Meditation Retreat with Venerable Jhayako at Jhana Grove Retreat Centre in Serpentine, Western Australia, from 19th June - 21st June 2026. Track 3 : Chanting , Q &amp; A - 20th June 26. See the full retreat on bswa.org here. Support us on https://ko-fi.com/thebuddhistsocietyofwa BSWA teachings are available from: BSWA Teachings BSWA Podcast Channel BSWA DeeperDhamma Podbean Channel BSWA…</description>
+      <enclosure url="https://mcdn.podbean.com/mf/web/b56si3e9wdhctuxb/3_Chanting_and_Q_A_7_00_-_8_30_pm9gv9s.mp3" type="audio/mpeg" length="139250253"/>
+      <itunes:author>Venerable Jhayako</itunes:author>
+      <itunes:duration>1 hr 37 min</itunes:duration>
+      <copyright>Venerable Jhayako · Ajahn Brahm Podcast (CC BY-NC-ND 3.0, https://creativecommons.org/licenses/by-nc-nd/3.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Guided Meditation: Sensations as Doorways</title>
+      <link>https://www.audiodharma.org/talks/26121</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#c670de017c913d32</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 +0000</pubDate>
+      <description>This talk was given by Gil Fronsdal on 2026.08.18 at the Insight Meditation Center in Redwood City, CA.</description>
+      <enclosure url="https://audiodharma.us-east-1.linodeobjects.com/talks/26121/20260818-gil_fronsdal-imc-guided_meditation_sensations_as_doorways.mp3" type="audio/mp3" length="1881"/>
+      <itunes:author>Gil Fronsdal</itunes:author>
+      <itunes:duration>31 min</itunes:duration>
+      <copyright>Gil Fronsdal · AudioDharma (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Sean Oakes, PhD: Monday Night Meditation: Including Nature and Spirit Beings in our Practice</title>
+      <link>https://dharmaseed.org/talks/98892/?access_key=qoMeRfJdnl</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#8287481ee2e52246</guid>
+      <pubDate>Mon, 17 Aug 2026 00:00:00 +0000</pubDate>
+      <description>Starting with a meditation connecting us to the natural world around us, and the many kinds of conscious beings that may be there, we explore bringing back animist understandings of the world and the Dharma that have been lost in our modern psychological, individualistic practice.</description>
+      <enclosure url="https://dharmaseed.org//talks/98892/20260817-Sean_Oakes_PhD-SR-monday_night_meditation_including_nature_and_spirit_beings_in_our_practice-98892.mp3?access_key=qoMeRfJdnl&amp;rss=" type="audio/mpeg" length="176928479"/>
+      <itunes:duration>2 hr 3 min</itunes:duration>
+      <copyright>Spirit Rock Meditation Center (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Guided Meditation: The Body as an Antenna</title>
+      <link>https://www.audiodharma.org/talks/26116</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#04e70eae209fe0cd</guid>
+      <pubDate>Mon, 17 Aug 2026 00:00:00 +0000</pubDate>
+      <description>This talk was given by Gil Fronsdal on 2026.08.17 at the Insight Meditation Center in Redwood City, CA.</description>
+      <enclosure url="https://audiodharma.us-east-1.linodeobjects.com/talks/26116/20260817-gil_fronsdal-imc-guided_meditation_the_body_as_an_antenna.mp3" type="audio/mp3" length="1688"/>
+      <itunes:author>Gil Fronsdal</itunes:author>
+      <itunes:duration>28 min</itunes:duration>
+      <copyright>Gil Fronsdal · AudioDharma (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Meditation: Awakening Factors review</title>
+      <link>https://dharmaseed.org/talks/98817/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#e414816c9153b305</guid>
+      <pubDate>Fri, 14 Aug 2026 00:00:00 +0000</pubDate>
+      <description>A 40-minute guided practice led by Jill Shepherd, from Blue Mountains Insight Meditation Centre.</description>
+      <enclosure url="https://dharmaseed.org//talks/98817/20260814-Jill_Shepherd-BMIMC-32_meditation_awakening_factors_review-98817.mp3?rss=" type="audio/mpeg" length="19236747"/>
+      <itunes:author>Jill Shepherd</itunes:author>
+      <itunes:duration>40 min</itunes:duration>
+      <copyright>Jill Shepherd · Blue Mountains Insight Meditation Centre (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Guided Meditation: Too busy knowing to know who you are</title>
+      <link>https://www.audiodharma.org/talks/26079</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#b2315b412290be17</guid>
+      <pubDate>Thu, 13 Aug 2026 00:00:00 +0000</pubDate>
+      <description>This talk was given by Matthew Brensilver on 2026.08.12 at the Insight Meditation Center in Redwood City, CA.</description>
+      <enclosure url="https://audiodharma.us-east-1.linodeobjects.com/talks/26079/20260812-matthew_brensilver-imc-guided_meditation_too_busy_knowing_to_know_who_you_are.mp3" type="audio/mp3" length="1584"/>
+      <itunes:author>Matthew Brensilver</itunes:author>
+      <itunes:duration>26 min</itunes:duration>
+      <copyright>Matthew Brensilver · AudioDharma (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Meditation: Spacious awareness</title>
+      <link>https://dharmaseed.org/talks/98805/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#047b98f7303e9d88</guid>
+      <pubDate>Thu, 13 Aug 2026 00:00:00 +0000</pubDate>
+      <description>A 41-minute guided open awareness practice led by Jill Shepherd, from Blue Mountains Insight Meditation Centre.</description>
+      <enclosure url="https://dharmaseed.org//talks/98805/20260813-Jill_Shepherd-BMIMC-30_meditation_spacious_awareness-98805.mp3?rss=" type="audio/mpeg" length="19655754"/>
+      <itunes:author>Jill Shepherd</itunes:author>
+      <itunes:duration>41 min</itunes:duration>
+      <copyright>Jill Shepherd · Blue Mountains Insight Meditation Centre (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Guided Mindfulness Meditation</title>
+      <link>https://dharmaseed.org/talks/98803/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#998934d2506b16e9</guid>
+      <pubDate>Wed, 12 Aug 2026 00:00:00 +0000</pubDate>
+      <description>A 29-minute guided practice led by JD Doyle, from Spirit Rock Meditation Center.</description>
+      <enclosure url="https://dharmaseed.org//talks/98803/20260812-JD_Doyle-SR-guided_mindfulness_meditation-98803.mp3?rss=" type="audio/mpeg" length="49048245"/>
+      <itunes:author>JD Doyle</itunes:author>
+      <itunes:duration>29 min</itunes:duration>
+      <copyright>JD Doyle · Spirit Rock Meditation Center (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Meditation: Calming the body-mind</title>
+      <link>https://dharmaseed.org/talks/98788/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#68fa565f47343092</guid>
+      <pubDate>Wed, 12 Aug 2026 00:00:00 +0000</pubDate>
+      <description>Exploring the awakening factor of Tranquility</description>
+      <enclosure url="https://dharmaseed.org//talks/98788/20260812-Jill_Shepherd-BMIMC-28_meditation_calming_the_body_mind-98788.mp3?rss=" type="audio/mpeg" length="19223002"/>
+      <itunes:author>Jill Shepherd</itunes:author>
+      <itunes:duration>40 min</itunes:duration>
+      <copyright>Jill Shepherd · Blue Mountains Insight Meditation Centre (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Guided Meditation: Reviewing Our Foundational Meditative Practices</title>
+      <link>https://dharmaseed.org/talks/98798/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#1178da65a88dbade</guid>
+      <pubDate>Wed, 12 Aug 2026 00:00:00 +0000</pubDate>
+      <description>Connected with the talk giving a contemporary map of our practices, we review four foundational practices: (1) developing concentration (samadhi); (2) cultivating general mindfulness, (3) cultivating mindfulness of pleasant or unpleasant feeling-tones, and being mindful of any ensuing reactivity (grasping after the pleasant and pushing away the unpleasant in relatively unconscious, automatic, and…</description>
+      <enclosure url="https://dharmaseed.org//talks/98798/20260812-Donald_Rothberg-SR-guided_meditation_reviewing_our_foundational_meditative_practices-98798.mp3?rss=" type="audio/mpeg" length="30052196"/>
+      <itunes:author>Donald Rothberg</itunes:author>
+      <itunes:duration>36 min</itunes:duration>
+      <copyright>Donald Rothberg · Spirit Rock Meditation Center (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Meditation: Gladdening the Mind</title>
+      <link>https://dharmaseed.org/talks/98777/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#500a126746456bf7</guid>
+      <pubDate>Tue, 11 Aug 2026 00:00:00 +0000</pubDate>
+      <description>A 40-minute guided practice led by Jill Shepherd, from Blue Mountains Insight Meditation Centre.</description>
+      <enclosure url="https://dharmaseed.org//talks/98777/20260811-Jill_Shepherd-BMIMC-26_meditation_gladdening_the_mind-98777.mp3?rss=" type="audio/mpeg" length="19263528"/>
+      <itunes:author>Jill Shepherd</itunes:author>
+      <itunes:duration>40 min</itunes:duration>
+      <copyright>Jill Shepherd · Blue Mountains Insight Meditation Centre (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Meditation: Exploring the self-constructing process</title>
+      <link>https://dharmaseed.org/talks/98752/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#86714c943f03c914</guid>
+      <pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate>
+      <description>A 29-minute guided practice led by Jill Shepherd, from Blue Mountains Insight Meditation Centre.</description>
+      <enclosure url="https://dharmaseed.org//talks/98752/20260810-Jill_Shepherd-BMIMC-24_meditation_exploring_the_self_constructing_process-98752.mp3?rss=" type="audio/mpeg" length="13780309"/>
+      <itunes:author>Jill Shepherd</itunes:author>
+      <itunes:duration>29 min</itunes:duration>
+      <copyright>Jill Shepherd · Blue Mountains Insight Meditation Centre (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>The Field of Awareness Guided Meditation</title>
+      <link>https://dharmaseed.org/talks/98754/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#cc75908d3cc038bf</guid>
+      <pubDate>Sun, 09 Aug 2026 00:00:00 +0000</pubDate>
+      <description>(Clintonville Sangha Ohio) This meditation will help you feel more of the depth and breadth of your awareness. It is an exploration into your unlimited, open awareness, here now.</description>
+      <enclosure url="https://dharmaseed.org//talks/98754/20260809-Amita_Schmidt--the_field_of_awareness_guided_meditation-98754.mp3?rss=" type="audio/mpeg" length="7091222"/>
+      <itunes:author>Amita Schmidt</itunes:author>
+      <itunes:duration>12 min</itunes:duration>
+      <copyright>Amita Schmidt · Dharma Seed (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Meditation &amp; Wisdom</title>
+      <link>https://dharmaseed.org/talks/98750/?access_key=nZJCxKIFaN</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#35ffb9b04ddaf85a</guid>
+      <pubDate>Sun, 09 Aug 2026 00:00:00 +0000</pubDate>
+      <description>A 56-minute guided practice led by Peace Twesigye, from Spirit Rock Meditation Center.</description>
+      <enclosure url="https://dharmaseed.org//talks/98750/20260809-Peace_Twesigye-SR-meditation_wisdom-98750.mp3?access_key=nZJCxKIFaN&amp;rss=" type="audio/mpeg" length="33399047"/>
+      <itunes:author>Peace Twesigye</itunes:author>
+      <itunes:duration>56 min</itunes:duration>
+      <copyright>Peace Twesigye · Spirit Rock Meditation Center (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Meditation: Self-compassion</title>
+      <link>https://dharmaseed.org/talks/98740/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#1ddf5d016be3c20c</guid>
+      <pubDate>Sun, 09 Aug 2026 00:00:00 +0000</pubDate>
+      <description>A 41-minute guided compassion practice led by Jill Shepherd, from Blue Mountains Insight Meditation Centre.</description>
+      <enclosure url="https://dharmaseed.org//talks/98740/20260809-Jill_Shepherd-BMIMC-21_meditation_self_compassion-98740.mp3?rss=" type="audio/mpeg" length="19857616"/>
+      <itunes:author>Jill Shepherd</itunes:author>
+      <itunes:duration>41 min</itunes:duration>
+      <copyright>Jill Shepherd · Blue Mountains Insight Meditation Centre (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Meditation: Choiceless attention</title>
+      <link>https://dharmaseed.org/talks/98719/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#01824e0c42f6b39d</guid>
+      <pubDate>Sat, 08 Aug 2026 00:00:00 +0000</pubDate>
+      <description>A 40-minute guided open awareness practice led by Jill Shepherd, from Blue Mountains Insight Meditation Centre.</description>
+      <enclosure url="https://dharmaseed.org//talks/98719/20260808-Jill_Shepherd-BMIMC-19_meditation_choiceless_attention-98719.mp3?rss=" type="audio/mpeg" length="19166667"/>
+      <itunes:author>Jill Shepherd</itunes:author>
+      <itunes:duration>40 min</itunes:duration>
+      <copyright>Jill Shepherd · Blue Mountains Insight Meditation Centre (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Meditation: Mindfulness of mental activity</title>
+      <link>https://dharmaseed.org/talks/98703/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#fab101e57ccbdcb7</guid>
+      <pubDate>Fri, 07 Aug 2026 00:00:00 +0000</pubDate>
+      <description>A 25-minute guided practice led by Jill Shepherd, from Blue Mountains Insight Meditation Centre.</description>
+      <enclosure url="https://dharmaseed.org//talks/98703/20260807-Jill_Shepherd-BMIMC-17_meditation_mindfulness_of_mental_activity-98703.mp3?rss=" type="audio/mpeg" length="12136905"/>
+      <itunes:author>Jill Shepherd</itunes:author>
+      <itunes:duration>25 min</itunes:duration>
+      <copyright>Jill Shepherd · Blue Mountains Insight Meditation Centre (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Meditation: Mindfulness of hearing</title>
+      <link>https://dharmaseed.org/talks/98698/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#75244339cc247d0e</guid>
+      <pubDate>Thu, 06 Aug 2026 00:00:00 +0000</pubDate>
+      <description>A 30-minute guided practice led by Jill Shepherd, from Blue Mountains Insight Meditation Centre.</description>
+      <enclosure url="https://dharmaseed.org//talks/98698/20260806-Jill_Shepherd-BMIMC-14_meditation_mindfulness_of_hearing-98698.mp3?rss=" type="audio/mpeg" length="14508888"/>
+      <itunes:author>Jill Shepherd</itunes:author>
+      <itunes:duration>30 min</itunes:duration>
+      <copyright>Jill Shepherd · Blue Mountains Insight Meditation Centre (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Meditation: Mettā for oneself</title>
+      <link>https://dharmaseed.org/talks/98697/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#2d083a286cdacdac</guid>
+      <pubDate>Thu, 06 Aug 2026 00:00:00 +0000</pubDate>
+      <description>A 34-minute guided practice led by Jill Shepherd, from Blue Mountains Insight Meditation Centre.</description>
+      <enclosure url="https://dharmaseed.org//talks/98697/20260806-Jill_Shepherd-BMIMC-13_meditation_mett_for_oneself-98697.mp3?rss=" type="audio/mpeg" length="16304127"/>
+      <itunes:author>Jill Shepherd</itunes:author>
+      <itunes:duration>34 min</itunes:duration>
+      <copyright>Jill Shepherd · Blue Mountains Insight Meditation Centre (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Meditation: Exploring cetana or intention, the about-to moment</title>
+      <link>https://dharmaseed.org/talks/98687/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#e6f8a2077fc9ffed</guid>
+      <pubDate>Wed, 05 Aug 2026 00:00:00 +0000</pubDate>
+      <description>A 28-minute guided practice led by Jill Shepherd, from Blue Mountains Insight Meditation Centre.</description>
+      <enclosure url="https://dharmaseed.org//talks/98687/20260805-Jill_Shepherd-BMIMC-11_meditation_exploring_cetana_or_intention_the_about_to_moment-98687.mp3?rss=" type="audio/mpeg" length="13683904"/>
+      <itunes:author>Jill Shepherd</itunes:author>
+      <itunes:duration>28 min</itunes:duration>
+      <copyright>Jill Shepherd · Blue Mountains Insight Meditation Centre (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Matthew Brensilver, Vinny Ferraro: Guided Meditation: Mindfulness and Landing in the Breath (Retreat at Spirit Rock)</title>
+      <link>https://dharmaseed.org/talks/98726/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#9f28d50e26f9afc4</guid>
+      <pubDate>Wed, 05 Aug 2026 00:00:00 +0000</pubDate>
+      <description>A 55-minute guided breath practice, from Spirit Rock Meditation Center.</description>
+      <enclosure url="https://dharmaseed.org//talks/98726/20260805-Vinny_Ferraro-SR-guided_meditation_mindfulness_and_landing_in_the_breath_retreat_at_spirit_rock-98726.mp3?rss=" type="audio/mpeg" length="26228351"/>
+      <itunes:duration>55 min</itunes:duration>
+      <copyright>Spirit Rock Meditation Center (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Meditation: Mindfulness of feeling-tones / vedanā</title>
+      <link>https://dharmaseed.org/talks/98686/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#0762cc9c5afc1981</guid>
+      <pubDate>Wed, 05 Aug 2026 00:00:00 +0000</pubDate>
+      <description>A 40-minute guided practice led by Jill Shepherd, from Blue Mountains Insight Meditation Centre.</description>
+      <enclosure url="https://dharmaseed.org//talks/98686/20260805-Jill_Shepherd-BMIMC-10_meditation_mindfulness_of_feeling_tones_vedan-98686.mp3?rss=" type="audio/mpeg" length="18996850"/>
+      <itunes:author>Jill Shepherd</itunes:author>
+      <itunes:duration>40 min</itunes:duration>
+      <copyright>Jill Shepherd · Blue Mountains Insight Meditation Centre (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Meditation: Mental noting of physical sensations</title>
+      <link>https://dharmaseed.org/talks/98651/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#a99c292f0dd09504</guid>
+      <pubDate>Tue, 04 Aug 2026 00:00:00 +0000</pubDate>
+      <description>Using the tool of mental noting or labelling to help stay present with elemental qualities in breathing and the whole body, including the experience of pain</description>
+      <enclosure url="https://dharmaseed.org//talks/98651/20260804-Jill_Shepherd-BMIMC-07_meditation_mental_noting_of_physical_sensations-98651.mp3?rss=" type="audio/mpeg" length="21516905"/>
+      <itunes:author>Jill Shepherd</itunes:author>
+      <itunes:duration>45 min</itunes:duration>
+      <copyright>Jill Shepherd · Blue Mountains Insight Meditation Centre (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Meditation: Mostly silent, with suggestions at the start for choosing which practice to do</title>
+      <link>https://dharmaseed.org/talks/98658/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#1c3850ff22acfa6a</guid>
+      <pubDate>Tue, 04 Aug 2026 00:00:00 +0000</pubDate>
+      <description>A 42-minute guided practice led by Jill Shepherd, from Blue Mountains Insight Meditation Centre.</description>
+      <enclosure url="https://dharmaseed.org//talks/98658/20260804-Jill_Shepherd-BMIMC-08_meditation_mostly_silent_with_suggestions_at_the_start_for_choosing_which_practice_to_do-98658.mp3?rss=" type="audio/mpeg" length="20257702"/>
+      <itunes:author>Jill Shepherd</itunes:author>
+      <itunes:duration>42 min</itunes:duration>
+      <copyright>Jill Shepherd · Blue Mountains Insight Meditation Centre (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Guided Meditation</title>
+      <link>https://dharmaseed.org/talks/98644/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#c849ce1a8702a8a3</guid>
+      <pubDate>Mon, 03 Aug 2026 00:00:00 +0000</pubDate>
+      <description>A guided meditation followed by silence and further reflections at the end of the sitting</description>
+      <enclosure url="https://dharmaseed.org//talks/98644/20260803-Andrea_Fella-IMSFR-guided_meditation-98644.mp3?rss=" type="audio/mpeg" length="90838"/>
+      <itunes:author>Andrea Fella</itunes:author>
+      <itunes:duration>0 min</itunes:duration>
+      <copyright>Andrea Fella · Insight Meditation Society - Forest Refuge (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Meditation: Mindfulness of breathing in long and short</title>
+      <link>https://dharmaseed.org/talks/98636/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#9190ced7245f4866</guid>
+      <pubDate>Mon, 03 Aug 2026 00:00:00 +0000</pubDate>
+      <description>Beginning to notice some of the details of breathing, still maintaining an open, spacious awareness</description>
+      <enclosure url="https://dharmaseed.org//talks/98636/20260803-Jill_Shepherd-BMIMC-04_meditation_mindfulness_of_breathing_in_long_and_short-98636.mp3?rss=" type="audio/mpeg" length="19494633"/>
+      <itunes:author>Jill Shepherd</itunes:author>
+      <itunes:duration>41 min</itunes:duration>
+      <copyright>Jill Shepherd · Blue Mountains Insight Meditation Centre (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Meditation: Mindfulness of the body in relation to the four elemental qualities</title>
+      <link>https://dharmaseed.org/talks/98638/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#28ce78ad7a81f15c</guid>
+      <pubDate>Mon, 03 Aug 2026 00:00:00 +0000</pubDate>
+      <description>A 33-minute guided practice led by Jill Shepherd, from Blue Mountains Insight Meditation Centre.</description>
+      <enclosure url="https://dharmaseed.org//talks/98638/20260803-Jill_Shepherd-BMIMC-05_meditation_mindfulness_of_the_body_in_relation_to_the_four_elemental_qualities-98638.mp3?rss=" type="audio/mpeg" length="15986477"/>
+      <itunes:author>Jill Shepherd</itunes:author>
+      <itunes:duration>33 min</itunes:duration>
+      <copyright>Jill Shepherd · Blue Mountains Insight Meditation Centre (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Meditationg With Thoughts</title>
+      <link>https://dharmaseed.org/talks/98646/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#1dc8432706651297</guid>
+      <pubDate>Mon, 03 Aug 2026 00:00:00 +0000</pubDate>
+      <description>How to practice with: -Noticing thoughts at the wake up moment -How to skillfully be with the absence of thought -Noticing what happens to thought once we become aware of it.</description>
+      <enclosure url="https://dharmaseed.org//talks/98646/20260803-Chas_DiCapua-IMSRC-meditationg_with_thoughts-98646.mp3?rss=" type="audio/mpeg" length="35920989"/>
+      <itunes:author>Chas DiCapua</itunes:author>
+      <itunes:duration>1 hr 15 min</itunes:duration>
+      <copyright>Chas DiCapua · Insight Meditation Society - Retreat Center (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Meditation: Establishing mindfulness of the body, breathing</title>
+      <link>https://dharmaseed.org/talks/98625/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#acc6cf4372daf935</guid>
+      <pubDate>Sun, 02 Aug 2026 00:00:00 +0000</pubDate>
+      <description>A 48-minute guided breath practice led by Jill Shepherd, from Blue Mountains Insight Meditation Centre.</description>
+      <enclosure url="https://dharmaseed.org//talks/98625/20260802-Jill_Shepherd-BMIMC-01_meditation_establishing_mindfulness_of_the_body_breathing-98625.mp3?rss=" type="audio/mpeg" length="23021029"/>
+      <itunes:author>Jill Shepherd</itunes:author>
+      <itunes:duration>48 min</itunes:duration>
+      <copyright>Jill Shepherd · Blue Mountains Insight Meditation Centre (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Instructions and meditation: Mindfulness of breathing 2</title>
+      <link>https://dharmaseed.org/talks/98628/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#6249663be470bfe5</guid>
+      <pubDate>Sun, 02 Aug 2026 00:00:00 +0000</pubDate>
+      <description>Attuning to the different energetic effects of inhaling and exhaling</description>
+      <enclosure url="https://dharmaseed.org//talks/98628/20260802-Jill_Shepherd-BMIMC-02_instructions_and_meditation_mindfulness_of_breathing_2-98628.mp3?rss=" type="audio/mpeg" length="19585811"/>
+      <itunes:author>Jill Shepherd</itunes:author>
+      <itunes:duration>41 min</itunes:duration>
+      <copyright>Jill Shepherd · Blue Mountains Insight Meditation Centre (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Guided Compassion</title>
+      <link>https://dharmaseed.org/talks/98637/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#32706dcc68a39f73</guid>
+      <pubDate>Sun, 02 Aug 2026 00:00:00 +0000</pubDate>
+      <description>A 50-minute guided compassion practice led by Matthew Hepburn, from Insight Meditation Society - Retreat Center.</description>
+      <enclosure url="https://dharmaseed.org//talks/98637/20260802-Matthew_Hepburn-IMSRC-guided_compassion-98637.mp3?rss=" type="audio/mpeg" length="23963151"/>
+      <itunes:author>Matthew Hepburn</itunes:author>
+      <itunes:duration>50 min</itunes:duration>
+      <copyright>Matthew Hepburn · Insight Meditation Society - Retreat Center (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Guided Instructions: Enjoyment and Agility Amidst Discomfort</title>
+      <link>https://dharmaseed.org/talks/98606/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#3a8c016fab3735df</guid>
+      <pubDate>Sat, 01 Aug 2026 00:00:00 +0000</pubDate>
+      <description>Practicing awareness, wisdom and flexibility in moments of ease and imperfection alike</description>
+      <enclosure url="https://dharmaseed.org//talks/98606/20260801-Matthew_Hepburn-IMSRC-guided_instructions_enjoyment_and_agility_amidst_discomfort-98606.mp3?rss=" type="audio/mpeg" length="89001944"/>
+      <itunes:author>Matthew Hepburn</itunes:author>
+      <itunes:duration>3 hr 5 min</itunes:duration>
+      <copyright>Matthew Hepburn · Insight Meditation Society - Retreat Center (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Guided Meditation: Accompanied by the Wise</title>
+      <link>https://www.audiodharma.org/talks/25948</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#cb185f0f29aac824</guid>
+      <pubDate>Fri, 31 Jul 2026 00:00:00 +0000</pubDate>
+      <description>This talk was given by Gil Fronsdal on 2026.07.31 at the Insight Meditation Center in Redwood City, CA.</description>
+      <enclosure url="https://audiodharma.us-east-1.linodeobjects.com/talks/25948/20260731-gil_fronsdal-imc-guided_meditation_accompanied_by_the_wise.mp3" type="audio/mp3" length="1728"/>
+      <itunes:author>Gil Fronsdal</itunes:author>
+      <itunes:duration>29 min</itunes:duration>
+      <copyright>Gil Fronsdal · AudioDharma (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Guided Meditation: Awareness Established in the Body</title>
+      <link>https://www.audiodharma.org/talks/25951</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#20185c5f4a0e7170</guid>
+      <pubDate>Thu, 30 Jul 2026 00:00:00 +0000</pubDate>
+      <description>This talk was given by Gil Fronsdal on 2026.07.30 at the Insight Meditation Center in Redwood City, CA.</description>
+      <enclosure url="https://audiodharma.us-east-1.linodeobjects.com/talks/25951/20260730-gil_fronsdal-imc-guided_meditation_awareness_established_in_the_body.mp3" type="audio/mp3" length="1821"/>
+      <itunes:author>Gil Fronsdal</itunes:author>
+      <itunes:duration>30 min</itunes:duration>
+      <copyright>Gil Fronsdal · AudioDharma (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Guided Meditation: What&#39;s Comes Forth?</title>
+      <link>https://www.audiodharma.org/talks/25935</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#a87b24fef55151ab</guid>
+      <pubDate>Wed, 29 Jul 2026 00:00:00 +0000</pubDate>
+      <description>This talk was given by Gil Fronsdal on 2026.07.29 at the Insight Meditation Center in Redwood City, CA.</description>
+      <enclosure url="https://audiodharma.us-east-1.linodeobjects.com/talks/25935/20260729-gil_fronsdal-imc-guided_meditation_what_s_comes_forth.mp3" type="audio/mp3" length="1791"/>
+      <itunes:author>Gil Fronsdal</itunes:author>
+      <itunes:duration>30 min</itunes:duration>
+      <copyright>Gil Fronsdal · AudioDharma (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Guided Meditation: Allowing the Influence of Breath</title>
+      <link>https://www.audiodharma.org/talks/25932</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#3b6ce614414bd992</guid>
+      <pubDate>Tue, 28 Jul 2026 00:00:00 +0000</pubDate>
+      <description>This talk was given by Gil Fronsdal on 2026.07.28 at the Insight Meditation Center in Redwood City, CA.</description>
+      <enclosure url="https://audiodharma.us-east-1.linodeobjects.com/talks/25932/20260728-gil_fronsdal-imc-guided_meditation_allowing_the_influence_of_breath.mp3" type="audio/mp3" length="1760"/>
+      <itunes:author>Gil Fronsdal</itunes:author>
+      <itunes:duration>29 min</itunes:duration>
+      <copyright>Gil Fronsdal · AudioDharma (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Guided Meditation: Homecoming</title>
+      <link>https://www.audiodharma.org/talks/25921</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#b0a2d0b80ff43519</guid>
+      <pubDate>Mon, 27 Jul 2026 00:00:00 +0000</pubDate>
+      <description>This talk was given by Gil Fronsdal on 2026.07.27 at the Insight Meditation Center in Redwood City, CA.</description>
+      <enclosure url="https://audiodharma.us-east-1.linodeobjects.com/talks/25921/20260727-gil_fronsdal-imc-guided_meditation_homecoming.mp3" type="audio/mp3" length="1727"/>
+      <itunes:author>Gil Fronsdal</itunes:author>
+      <itunes:duration>29 min</itunes:duration>
+      <copyright>Gil Fronsdal · AudioDharma (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Guided meditation</title>
+      <link>https://dharmaseed.org/talks/98574/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#5a129d63e1b0636c</guid>
+      <pubDate>Sun, 26 Jul 2026 00:00:00 +0000</pubDate>
+      <description>A 24-minute guided practice led by Ajahn Sucitto, from Dharma Seed.</description>
+      <enclosure url="https://dharmaseed.org//talks/98574/20260726-Ajahn_Sucitto--guided_meditation-98574.mp3?rss=" type="audio/mpeg" length="17550404"/>
+      <itunes:author>Ajahn Sucitto</itunes:author>
+      <itunes:duration>24 min</itunes:duration>
+      <copyright>Ajahn Sucitto · Dharma Seed (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Pt. 2 Hiri and Ottappa with Vedana (pleasant, unpleasant, neutral - neither one) a guided meditation</title>
+      <link>https://dharmaseed.org/talks/98552/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#2128c49c9f22c423</guid>
+      <pubDate>Sun, 26 Jul 2026 00:00:00 +0000</pubDate>
+      <description>Pt. 2 Hiri and Ottappa with Vedana (pleasant, unpleasant, neutral - neither one) a guided meditation</description>
+      <enclosure url="https://dharmaseed.org//talks/98552/20260726-Shinmu_Tamori_Gibson-IMSRC-pt_2_hiri_and_ottappa_with_vedana_pleasant_unpleasant_neutral_neither_one_a_guided_meditation-98552.mp3?rss=" type="audio/mpeg" length="23027741"/>
+      <itunes:author>Shinmu Tamori Gibson</itunes:author>
+      <itunes:duration>48 min</itunes:duration>
+      <copyright>Shinmu Tamori Gibson · Insight Meditation Society - Retreat Center (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Meditation: Not Pushing or Pulling</title>
+      <link>https://dharmaseed.org/talks/98550/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#f22d70d7ae2e4f78</guid>
+      <pubDate>Sat, 25 Jul 2026 00:00:00 +0000</pubDate>
+      <description>A 45-minute guided practice led by Kim Allen, from Uncontrived.</description>
+      <enclosure url="https://dharmaseed.org//talks/98550/20260725-Kim_Allen-Uncontrived-meditation_not_pushing_or_pulling-98550.mp3?rss=" type="audio/mpeg" length="21641949"/>
+      <itunes:author>Kim Allen</itunes:author>
+      <itunes:duration>45 min</itunes:duration>
+      <copyright>Kim Allen · Uncontrived (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Introduction and Guided Meditation: OK For Anything to Arise or Cease</title>
+      <link>https://dharmaseed.org/talks/98549/</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#1b0d30fd18612e57</guid>
+      <pubDate>Sat, 25 Jul 2026 00:00:00 +0000</pubDate>
+      <description>A 44-minute guided practice led by Kim Allen, from Uncontrived.</description>
+      <enclosure url="https://dharmaseed.org//talks/98549/20260725-Kim_Allen-Uncontrived-introduction_and_guided_meditation_ok_for_anything_to_arise_or_cease-98549.mp3?rss=" type="audio/mpeg" length="21351032"/>
+      <itunes:author>Kim Allen</itunes:author>
+      <itunes:duration>44 min</itunes:duration>
+      <copyright>Kim Allen · Uncontrived (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Guided Meditation: Why Not Love</title>
+      <link>https://www.audiodharma.org/talks/25916</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#f30728f76a826d10</guid>
+      <pubDate>Fri, 24 Jul 2026 00:00:00 +0000</pubDate>
+      <description>This talk was given by Gil Fronsdal on 2026.07.24 at the Insight Meditation Center in Redwood City, CA.</description>
+      <enclosure url="https://audiodharma.us-east-1.linodeobjects.com/talks/25916/20260724-gil_fronsdal-imc-guided_meditation_why_not_love.mp3" type="audio/mp3" length="1819"/>
+      <itunes:author>Gil Fronsdal</itunes:author>
+      <itunes:duration>30 min</itunes:duration>
+      <copyright>Gil Fronsdal · AudioDharma (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Guided Meditation: Practicing for the Sake of Others</title>
+      <link>https://www.audiodharma.org/talks/25912</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#dcc0a220805a0c60</guid>
+      <pubDate>Thu, 23 Jul 2026 00:00:00 +0000</pubDate>
+      <description>This talk was given by Gil Fronsdal on 2026.07.23 at the Insight Meditation Center in Redwood City, CA.</description>
+      <enclosure url="https://audiodharma.us-east-1.linodeobjects.com/talks/25912/20260723-gil_fronsdal-imc-guided_meditatiion_practicing_for_the_sake_of_others.mp3" type="audio/mp3" length="1768"/>
+      <itunes:author>Gil Fronsdal</itunes:author>
+      <itunes:duration>29 min</itunes:duration>
+      <copyright>Gil Fronsdal · AudioDharma (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Guided Meditation: We don&#39;t choose to let go</title>
+      <link>https://www.audiodharma.org/talks/25911</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#ca6467de05d2d09f</guid>
+      <pubDate>Thu, 23 Jul 2026 00:00:00 +0000</pubDate>
+      <description>This talk was given by Matthew Brensilver on 2026.07.22 at the Insight Meditation Center in Redwood City, CA.</description>
+      <enclosure url="https://audiodharma.us-east-1.linodeobjects.com/talks/25911/20260722-matthew_brensilver-imc-guided_meditation_we_don_t_choose_to_let_go.mp3" type="audio/mp3" length="1258"/>
+      <itunes:author>Matthew Brensilver</itunes:author>
+      <itunes:duration>21 min</itunes:duration>
+      <copyright>Matthew Brensilver · AudioDharma (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Guided Meditation: Attending with Care</title>
+      <link>https://www.audiodharma.org/talks/25905</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#116dde5cb5e3a72e</guid>
+      <pubDate>Wed, 22 Jul 2026 00:00:00 +0000</pubDate>
+      <description>This talk was given by Gil Fronsdal on 2026.07.22 at the Insight Meditation Center in Redwood City, CA.</description>
+      <enclosure url="https://audiodharma.us-east-1.linodeobjects.com/talks/25905/20260722-gil_fronsdal-imc-guided_meditation_attending_with_care.mp3" type="audio/mp3" length="1820"/>
+      <itunes:author>Gil Fronsdal</itunes:author>
+      <itunes:duration>30 min</itunes:duration>
+      <copyright>Gil Fronsdal · AudioDharma (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Guided Meditation: The Love of Non-Clinging</title>
+      <link>https://www.audiodharma.org/talks/25903</link>
+      <guid isPermaLink="false">https://alastairrushworth.com/meditation/#dcfe5fc19f2e6246</guid>
+      <pubDate>Tue, 21 Jul 2026 00:00:00 +0000</pubDate>
+      <description>This talk was given by Gil Fronsdal on 2026.07.21 at the Insight Meditation Center in Redwood City, CA.</description>
+      <enclosure url="https://audiodharma.us-east-1.linodeobjects.com/talks/25903/20260721-gil_fronsdal-imc-guided_meditation_the_love_of_non-clinging.mp3" type="audio/mp3" length="1819"/>
+      <itunes:author>Gil Fronsdal</itunes:author>
+      <itunes:duration>30 min</itunes:duration>
+      <copyright>Gil Fronsdal · AudioDharma (CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)</copyright>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+  </channel>
+</rss>

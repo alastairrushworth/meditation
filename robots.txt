@@ -1,4 +1,13 @@
+# Crawlers only ever read robots.txt from the host root, so this file — served
+# at /meditation/robots.txt — is ignored by search engines. The rules that
+# actually apply to this site live in the alastairrushworth.github.io repo, at
+# https://alastairrushworth.com/robots.txt, which also points at the sitemap
+# index that lists /meditation/sitemap.xml.
+#
+# It is kept here only so that anyone reading this repo is not left wondering
+# where the crawl rules went. Changing it has no effect.
+
 User-agent: *
 Allow: /
 
-Sitemap: https://alastairrushworth.com/meditation/sitemap.xml
+Sitemap: https://alastairrushworth.com/sitemap.xml
